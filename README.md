@@ -1,0 +1,2 @@
+# AutoPanoStitch
+ Automatic Panorama Stitching
