@@ -1,17 +1,20 @@
-%//%************************************************************************%
-%//%*                              Ph.D                                    *%
-%//%*                         Image Stitcher             				   *%
-%//%*                                                                      *%
-%//%*             Name: Preetham Aghalaya Manjunatha    		           *%
-%//%*             USC ID Number: 7356627445		                           *%
-%//%*             USC Email: aghalaya@usc.edu                              *%
-%//%*             Written Date: 07/28/2019                                 *%
-%//%************************************************************************%
-%//%*             Viterbi School of Engineering,                           *%
-%//%*             Sonny Astani Dept. of Civil Engineering,                 *%
-%//%*             University of Southern california,                       *%
-%//%*             Los Angeles, California.                                 *%
-%//%************************************************************************%
+%//%*************************************************************************%
+%//%*                 Automatic Panorama Image Stitcher                     *%
+%//%*           Stitches multiple images using feature points               *%
+%//%*                                                                       *%
+%//%*                    Name: Preetham Manjunatha                          *%
+%//%*               GitHub: https://github.com/preethamam	                *%
+%//%*                   Repo Name: AutoPanoStitch                           *%
+%//%*                    Written Date: 07/28/2021                           *%
+%%***************************************************************************%
+%* Citation 1: Automatic Panoramic Image Stitching using Invariant Features.*% 
+%* M. Brown and D. Lowe. International Journal of Computer Vision. 74(1),   *%
+%* pages 59-73, 2007                                                        *%
+%*                                                                          *%
+%* Citation 2: Recognising Panoramas. M. Brown and D. G. Lowe.              *%
+%* International Conference on Computer Vision (ICCV2003). pages 1218-1225, *%
+%* Nice, France, 2003.                                                      *%
+%****************************************************************************%
 
 %% Start
 %--------------------------------------------------------------------------
