@@ -18,6 +18,7 @@ node_modules
 *.pdf
 *.PDF
 
+ScrachPaper.m
 
 # Ignore files related to API keys
 .env
