@@ -1,13 +1,14 @@
 # AutoPanoStitch
 Automatic Panorama Stitching software in MATLAB.
 
-# Stitched images 1
+# Stitched images 1:
 | Type | Images |
 | --- | --- |
-| Stitched image | ![out_6_NSH](https://user-images.githubusercontent.com/28588878/143262116-10a768b1-d791-4758-86a9-2d2b906e8644.jpg) |
-| Cropped image | ![cropped1](https://user-images.githubusercontent.com/28588878/143262859-213860cb-1e2f-4986-9c2d-e1bec2d368a2.jpg) |
+| Stitched image | ![pano_full](https://user-images.githubusercontent.com/28588878/151394796-907b2a27-2054-412a-aa6c-aa5120294df5.jpg) |
+| Crop box | ![pano_bbox](https://user-images.githubusercontent.com/28588878/151394950-cb1c0009-2ed4-4b2b-94dc-66dc18695445.jpg) |
+| Cropped image | ![pano_crop](https://user-images.githubusercontent.com/28588878/151394973-c05b9c2c-c3b2-416a-8270-77afd79f484c.jpg) |
 
-# Stitched images 2
+# Stitched images 2:
 | Type | Images |
 | --- | --- |
 | Stitched image | ![result_26](https://user-images.githubusercontent.com/28588878/143264138-cbb7b009-569b-426e-81f2-14d8eacad415.jpg) |
