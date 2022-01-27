@@ -17,11 +17,19 @@ Automatic Panorama Stitching software in MATLAB.
 MATLAB <br />
 MATLAB Computer Vision Toolbox <br />
 MATLAB Image Processing Toolbox <br />
+![VLFeat](https://www.vlfeat.org/install-matlab.html)
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program
 
-# Note 
-This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated
+
+# Note
+Currently, only planar projections stitching are supported in this version and can recognize multiple panoramas.  
+This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
+
+# Known issues
+1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
+2. Gain compensation on large number of images is computationally slow.
+
 
 # MATLAB Central
