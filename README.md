@@ -21,8 +21,7 @@ MATLAB Parallel Computing Toolbox <br />
 [VLFeat](https://www.vlfeat.org/install-matlab.html)
 
 # Run command
-Please use the `Main_AutoPanoStitch.m` to run the program
-
+Please use the `Main_AutoPanoStitch.m` to run the program. Change the `folderPath      = '../../../Data/Generic';` to your desired folder path. Also, change the `folderName      = '';` to a valid name.
 
 # Note
 Currently, only planar projections stitching is supported in this version and can recognize multiple panoramas. This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
@@ -31,5 +30,10 @@ Currently, only planar projections stitching is supported in this version and ca
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
 2. Gain compensation on large number of images is computationally slow.
 
+# Adaptation of open source 
+Some of the MATLAB functions are adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
+
+# Licensing conditions
+This software is being made available for research purposes only. Please cite the relevant citations as provided in the main file.
 
 # MATLAB Central
