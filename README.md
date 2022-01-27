@@ -24,8 +24,7 @@ Please use the `Main_AutoPanoStitch.m` to run the program
 
 
 # Note
-Currently, only planar projections stitching are supported in this version and can recognize multiple panoramas.  
-This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
+Currently, only planar projections stitching are supported in this version and can recognize multiple panoramas. This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
 
 # Known issues
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
