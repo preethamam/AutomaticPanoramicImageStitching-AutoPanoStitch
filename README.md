@@ -17,7 +17,7 @@ Automatic Panorama Stitching software in MATLAB.
 MATLAB <br />
 MATLAB Computer Vision Toolbox <br />
 MATLAB Image Processing Toolbox <br />
-![VLFeat](https://www.vlfeat.org/install-matlab.html)
+[VLFeat](https://www.vlfeat.org/install-matlab.html)
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program
