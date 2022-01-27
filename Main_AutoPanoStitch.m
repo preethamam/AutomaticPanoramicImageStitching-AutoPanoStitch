@@ -38,9 +38,6 @@ else
     disp('Platform not supported')
 end
 
-% 'D:\OneDrive\Team Work\Team CrackSTITCH\data\Generic';
-% 'D:\OneDrive\Team Work\Team WallBOT\Experimental Data\2019-04-28 Line Pathplan Drawn Crack Image Time Series Dataset\exp 1';
-
 folderName      = '';
 fileExt         = {'.jpg','.jpeg','.png', '.tiff', '.JPG','.JPEG','.PNG', '.TIFF'};
 input.showPlot  = 0;
