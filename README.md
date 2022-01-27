@@ -1,13 +1,13 @@
 # AutoPanoStitch
 Automatic Panorama Stitching software in MATLAB.
 
-# Sample 1: White background
+# Stitched images 1
 | Type | Images |
 | --- | --- |
 | Stitched image | ![out_6_NSH](https://user-images.githubusercontent.com/28588878/143262116-10a768b1-d791-4758-86a9-2d2b906e8644.jpg) |
 | Cropped image | ![cropped1](https://user-images.githubusercontent.com/28588878/143262859-213860cb-1e2f-4986-9c2d-e1bec2d368a2.jpg) |
 
-# Sample 2: Black background
+# Stitched images 2
 | Type | Images |
 | --- | --- |
 | Stitched image | ![result_26](https://user-images.githubusercontent.com/28588878/143264138-cbb7b009-569b-426e-81f2-14d8eacad415.jpg) |
@@ -22,6 +22,36 @@ MATLAB Parallel Computing Toolbox <br />
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program. Change the `folderPath      = '../../../Data/Generic';` to your desired folder path. Also, change the `folderName      = '';` to a valid name.
+
+Change the hyper parameters accordingly if needed. But it is not required though.
+```
+% Feature matching
+input.detector = 'SIFT'; % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
+input.Matchingmethod = 'Approximate'; %'Exhaustive' (default) | 'Approximate'
+input.Matchingthreshold = 1.5; %10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
+input.Ratiothreshold = 0.6; % ratio in the range (0,1]
+
+% Image matching (RANSAC)
+input.Inliersconfidence = 99.9;
+input.maxIter = 2000;
+input.Transformationtype = 'projective'; %'rigid' | 'similarity' | 'affine' | 'projective'
+input.MaxDistance = 1.50; %1.5;
+
+% Image blending and panorama
+input.sigmaN = 10;
+input.sigmag = 0.1;
+input.resizeImage = 1;
+input.resizeStitchedImage = 1;
+input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'
+input.bands = 2;
+
+% Post-processing
+input.canvas_color = 'black';
+input.showCropBoundingBox = 1;
+input.blackRange = 0;
+input.whiteRange = 250;
+input.showPlot  = 1;
+```
 
 # Note
 Currently, only planar projections stitching is supported in this version and can recognize multiple panoramas. This work is in progrees further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
