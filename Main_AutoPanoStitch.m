@@ -26,8 +26,10 @@ warning('off','all')
 
 %% Inputs
 %--------------------------------------------------------------------------
+% I/O
 if ismac
     % Code to run on Mac platform
+    folderPath      = '../../../Data/Generic';
 elseif isunix
     % Code to run on Linux platform
     folderPath      = '../../../Data/Generic';
@@ -39,8 +41,6 @@ else
 end
 
 folderName      = '';
-fileExt         = {'.jpg','.jpeg','.png', '.tiff', '.JPG','.JPEG','.PNG', '.TIFF'};
-input.showPlot  = 0;
 
 %% Inputs 2
 % Feature matching
@@ -59,15 +59,16 @@ input.MaxDistance = 1.50; %1.5;
 input.sigmaN = 10;
 input.sigmag = 0.1;
 input.resizeImage = 1;
-input.resizeStitchedImage = 0;
+input.resizeStitchedImage = 1;
 input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'
 input.bands = 2;
 
 % Post-processing
 input.canvas_color = 'black';
-input.showCropBoundingBox = 0;
+input.showCropBoundingBox = 1;
 input.blackRange = 0;
 input.whiteRange = 250;
+input.showPlot  = 1;
 
 %% Get image filenames and store image names
 imgSetVector = imageSet(fullfile(folderPath,folderName),'recursive');
@@ -76,7 +77,7 @@ datasetName  = cat(1,{imgSetVector.Description});
 %% Extract SIFT features
 folderLen = length(imgSetVector);
 
-for myImg = 8 %1:folderLen
+for myImg = 1
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     

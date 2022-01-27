@@ -6,7 +6,13 @@ for ii = 1:length(finalPanoramaTforms)
             renderPanorama(input, images, imageFocals, finalPanoramaTforms{ii}, concomps, ii);
         
         % Final panorama cropper
-%         croppedImage = panoramaCropper(input, panorama);   
+        croppedImage = panoramaCropper(input, panorama);   
+
+        % Plot the bounding boxes
+        figure;
+        imshow(croppedImage)
+        ax = gcf;
+        exportgraphics(ax,'pano_crop.jpg')
 
         % Generate a random (bright) color
         lineRGB = mod(rand(size(xCorrect,2),3),100);
@@ -14,7 +20,7 @@ for ii = 1:length(finalPanoramaTforms)
         lines_brightRGB = lineRGB ./ max_channel;
         
         % Plot the bounding boxes
-        figure(2);
+        figure;
         imshow(panorama)
         hold on
         for i = 1:size(xCorrect,2)
@@ -28,29 +34,21 @@ for ii = 1:length(finalPanoramaTforms)
 
         if ismac
             % Code to run on Mac platform
+            exportgraphics(ax, ['pano_'  ...
+            num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'],'Resolution',300)
         elseif isunix
             % Code to run on Linux platform
-            exportgraphics(ax, ['../../../Results/MATLAB Stitch/stitch_kevin_preetham_'  ...
+            exportgraphics(ax, ['pano_'  ...
             num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'],'Resolution',300)
         elseif ispc
             % Code to run on Windows platform
-            exportgraphics(ax, ['..\..\..\Results\MATLAB Stitch\stitch_kevin_preetham_'  ...
+            exportgraphics(ax, ['pano_'  ...
             num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'],'Resolution',300)
         else
             disp('Platform not supported')
         end
 
-        % Cropped view
-%         figure(3);
-%         imshow(croppedImage)
-% 
-%         figure(4);
-%         imshow(gainpanorama)
-
-%         input.canvas_color = 'white';
-%         croppedImage2 = panoramaCropper(input, croppedImage);
-% 
-%         figure(4);
-%         imshow(croppedImage2)
+        ax = gcf;
+        exportgraphics(ax,'pano_full.jpg')
 end
 end

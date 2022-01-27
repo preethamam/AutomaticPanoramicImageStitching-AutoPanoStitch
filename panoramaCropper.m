@@ -87,10 +87,13 @@ function croppedImage = panoramaCropper(input, stitchedImage)
 
     % Show tight bounding box
     if (input.showCropBoundingBox)
-        figure(1); 
+        figure; 
         imshow(stitchedImage);
         hold on
         rectangle('Position',[offsetx offsety cropW cropH], 'EdgeColor', 'r', 'LineWidth', 2, 'LineStyle', '--')
         hold off
+
+        ax = gcf;
+        exportgraphics(ax,'pano_bbox.jpg')
     end
 end
