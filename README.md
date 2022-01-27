@@ -68,3 +68,4 @@ Some of the MATLAB functions are adapted from the [Kevin Luo's GitHub Repo](http
 This software is being made available for research purposes only. Please cite the relevant citations as provided in the main file.
 
 # MATLAB Central
+[![View Automatic panorama stitcher (AutoPanoStitch) on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/105850-automatic-panorama-stitcher-autopanostitch)
