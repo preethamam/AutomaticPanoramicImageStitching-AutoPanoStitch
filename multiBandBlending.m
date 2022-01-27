@@ -1,3 +1,11 @@
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Multiband blending                            *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
 % [im] = multiBandBlending(input, warpedImages, warpedWeights)
 %
 % Given a set of images with the same size, applies multi-band blending

@@ -1,5 +1,14 @@
 function [allMatches, numMatches, tforms] = imageMatching(input, n, images, keypoints, allDescriptors)
 
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Image matching                                *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
+
 % Initialize
 allMatches = cell(n);
 numMatches = zeros(n);

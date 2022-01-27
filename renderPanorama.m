@@ -1,12 +1,14 @@
-% [height, width] = getPanoramaSize(images, tforms, ccs, cc)
-%
-% Creates and returns the panorama from applying projective transformations
-% on the images in the connected component with index cc.
-%
-% Credits: Adapted from online MATLAB example "Feature Based Panoramic
-% Image Stitching" at
-% http://www.mathworks.com/examples/matlab-computer-vision/mw/vision_product-FeatureBasedPanoramicImageStitchingExample-feature-based-panoramic-image-stitching
- function [panorama, gainpanorama, gainImages, gainRGB, xCorrect, yCorrect] = renderPanorama(input, images, focalLengths, tforms, ccs, cc)
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Panorama render                               *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
+
+function [panorama, gainpanorama, gainImages, gainRGB, xCorrect, yCorrect] = ...
+            renderPanorama(input, images, focalLengths, tforms, ccs, cc)
 n = length(tforms);
 
 % If the total area is too large, rescale the images to be smaller

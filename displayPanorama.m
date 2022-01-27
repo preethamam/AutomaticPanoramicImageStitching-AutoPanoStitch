@@ -1,5 +1,14 @@
 function displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName)
 
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Display panorama                              *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
+
 for ii = 1:length(finalPanoramaTforms)
         % Create and display panorama
         [panorama, gainpanorama, gainImages, gainRGB, xCorrect, yCorrect] = ...

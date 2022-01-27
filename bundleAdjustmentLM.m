@@ -1,5 +1,14 @@
 function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms)
 
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Bundle adjustment                             *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
+
 % Find connected components of image matches
 numMatchesG = graph(numMatches,'upper');
 [concomps, ccBinSizes] = conncomp(numMatchesG);

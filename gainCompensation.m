@@ -1,5 +1,14 @@
 function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages)
 
+%%***********************************************************************%
+%*                   Automatic panorama stitching                       *%
+%*                        Gain compensation                             *%
+%*                                                                      *%
+%* Code author: Preetham Manjunatha                                     *%
+%* Github link: https://github.com/preethamam                           *%
+%* Date: 01/27/2022                                                     *%
+%************************************************************************%
+
     % Initialze
     n = length(warpedImages);
     gainImages = cell(1,n);
