@@ -77,10 +77,10 @@ Currently, spherical, cyclindrical and planar projections stitching is supported
 3. Due to the rigid transformation and no straightening, some of the panaromas will be skewed.
 
 # Adaptation of open source 
-Some of the MATLAB functions are adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
+BUndle adjustment function in MATLAB is adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
 
 # Licensing conditions
-This software is being made available for research purposes only. Please cite the relevant citations as provided in the main file.
+This software is `LICENSED under The University of British Columbia`. This is being programmed and made available to public for research purposes only. Please cite the relevant citations as provided in the main file.
 
 # MATLAB Central
 [![View Automatic panorama stitcher (AutoPanoStitch) on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/105850-automatic-panorama-stitcher-autopanostitch)
