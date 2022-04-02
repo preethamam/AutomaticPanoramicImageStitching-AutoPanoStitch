@@ -1,5 +1,5 @@
 # AutoPanoStitch
-Automatic Panorama Stitching software in MATLAB.
+Automatic Panorama Stitching software in MATLAB. Spherical, cyclindrical and planar projections stitching is supported in this version and can recognize multiple panoramas.
 
 # Stitched images 1:
 | Type | Images |
@@ -19,47 +19,62 @@ MATLAB <br />
 MATLAB Computer Vision Toolbox <br />
 MATLAB Image Processing Toolbox <br />
 MATLAB Parallel Computing Toolbox <br />
-[VLFeat](https://www.vlfeat.org/install-matlab.html)
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program. Change the `folderPath      = '../../../Data/Generic';` to your desired folder path. Also, change the `folderName      = '';` to a valid name.
 
 Change the hyper parameters accordingly if needed. But it is not required though.
 ```
+%% Inputs 2
+%--------------------------------------------------------------------------
+% Parallel workers
+input.numCores = 4;            % Number of cores for parallel processing
+
+%% Inputs 3
+% Warping
+input.warpType = 'spherical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+input.focalLength = 1200;       % focal length of camera in pixels
+input.k1 = 0;                   % Radial distortion coefficient
+input.k2 = 0;                   % Radial distortion coefficient
+input.k3 = 0;                   % Radial distortion coefficient
+
 % Feature matching
-input.detector = 'SIFT'; % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
-input.Matchingmethod = 'Approximate'; %'Exhaustive' (default) | 'Approximate'
-input.Matchingthreshold = 1.5; %10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
-input.Ratiothreshold = 0.6; % ratio in the range (0,1]
+input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
+input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
+input.Matchingthreshold = 1.5;  %       10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
+input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 
 % Image matching (RANSAC)
-input.Inliersconfidence = 99.9;
-input.maxIter = 2000;
-input.Transformationtype = 'projective'; %'rigid' | 'similarity' | 'affine' | 'projective'
-input.MaxDistance = 1.50; %1.5;
+input.Inliersconfidence = 99.9;         % Inlier confidence [0,100]
+input.maxIter = 2000;                   % RANSAC maximum iterations
+input.Transformationtype = 'rigid'; % 'rigid' | 'similarity' | 'affine' | 'projective'
+input.MaxDistance = 1.50;               % Maximum distance (pixels)
 
 % Image blending and panorama
-input.sigmaN = 10;
-input.sigmag = 0.1;
-input.resizeImage = 1;
-input.resizeStitchedImage = 1;
+input.sigmaN = 10;                  % Standard deviations of the normalised intensity error
+input.sigmag = 0.1;                 % Standard deviations of the gain
+input.resizeImage = 1;              % Resize input images
+input.resizeStitchedImage = 0;      % Resize stitched image
 input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'
-input.bands = 2;
+input.bands = 6;                    % bands
+input.MBBsigma = 5;                 % Multi-band Gaussian sigma
+input.filtSize = [5,5];             % Gaussian kernel Filter size
 
 % Post-processing
-input.canvas_color = 'black';
-input.showCropBoundingBox = 1;
-input.blackRange = 0;
-input.whiteRange = 250;
-input.showPlot  = 1;
+input.canvas_color = 'black';       % Panorama canvas color 'black' | 'white'
+input.showCropBoundingBox = 1;      % Display cropping bounding box 0 | 1
+input.blackRange = 0;               % Minimum dark pixel value to crop panaroma
+input.whiteRange = 250;             % Minimum bright pixel value to crop panaroma
+input.showPlot  = 0;                % Display keypoints plot (parfor suppresses this flag, so no use)
 ```
 
 # Note
-Currently, only planar projections stitching is supported in this version and can recognize multiple panoramas. This work is in progress, further improvements such as inlcusion of spherical, cylindrical projections, full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
+Currently, spherical, cyclindrical and planar projections stitching is supported in this version and can recognize multiple panoramas. This work is in progress, further improvements such as inlcusion of a full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Depending on how your images are captured, panaroma being a `spherical`, `cylindrical` or `planar` should be selected judicially using the `input.warpType` and `input.Transformationtype`. Generally, `spherical` with `rigid` transformation should work well. Your patience will be appreciated.
 
 # Known issues
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
 2. Gain compensation on large number of images is computationally slow.
+3. Due to the rigid transformation and no straightening, some of the panaromas will be skewed.
 
 # Adaptation of open source 
 Some of the MATLAB functions are adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
