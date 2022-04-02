@@ -25,16 +25,12 @@ options = optimoptions(@lsqnonlin, 'Algorithm', 'levenberg-marquardt', ...
 for cc = 1:ccnum
     indices = find(concomps == cc);
     k = length(indices);
-    
-    if k < 2 % Skip if only one image in connected component
-        continue;
-    end
-    
+        
     % Find the center image of the panorama that minimizes total area      
     areas = zeros(k, 1);
     for index = 1:k
         i = indices(index);
-        finalTforms = getTforms(tree, i, initialTforms);
+        finalTforms = getTforms(input, tree, i, initialTforms);
 
         [height, width] = getPanoramaSize(images, finalTforms, concomps, cc);
 
@@ -43,12 +39,16 @@ for cc = 1:ccnum
     [~, index] = min(areas);
     center = indices(index);
     
-    finalTforms = getTforms(tree, center, initialTforms);
-            
+    finalTforms = getTforms(input, tree, center, initialTforms);
+    
+    if k < 2 % Skip if only one image in connected component
+        finalPanoramaTforms{cc} = finalTforms;
+        continue;
+    end
+    
     % Get an ordering of the images in the panorama
     ordering = getOrdering(indices, tree);
-   
-    
+       
     % Minimize the sum of squared projection error over all matches
     Hs_initial = zeros(9, k);
     Hs_LMfinal = zeros(9, k);
@@ -83,8 +83,20 @@ for cc = 1:ccnum
     for index = 1:k
         i = indices(index);
         H = reshape(Hs_LMfinal(:,index), [], 3);
-        refinedTforms(i).T = H';
-    end
+        if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+            tf = H';
+            tf(1:2,3) = 0;
+            refinedTforms(i).T = single(tf);
+        elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
+                || strcmp(input.Transformationtype,'similarity') || ...
+                   strcmp(input.Transformationtype,'affine'))
+            tf = H';
+            tf(1:2,3) = 0;
+            refinedTforms(i).T = single(tf);
+        else
+            refinedTforms(i).T = H';
+        end
+    end   
 
     finalPanoramaTforms{cc} = refinedTforms;
 end
@@ -245,10 +257,20 @@ end
 % connected component of image i in the tree with adjacency matrix G, given
 % the set of keypoints and matching indices. All tforms are calculated with
 % respect to image i.
-function [tforms] = getTforms(G, i, Tforms)
+function [tforms] = getTforms(input, G, i, Tforms)
     n = size(G, 1);
     visited = zeros(n, 1);
-    tforms(n) = projective2d(eye(3));
+
+    switch input.Transformationtype
+        case 'rigid' 
+            tforms(n) = rigid2d(eye(3));
+        case 'similarity' 
+            tforms(n) = affine2d(eye(3));
+        case 'affine' 
+            tforms(n) = affine2d(eye(3));
+        case 'projective'
+            tforms(n) = projective2d(eye(3));        
+    end
     
     [tforms] = updateTforms(G, i, visited, tforms, Tforms);
 end

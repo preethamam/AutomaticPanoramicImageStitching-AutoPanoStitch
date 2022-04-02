@@ -16,13 +16,13 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
         
         % Get size of the image
         [imRows, imCols, imChannel] = size(image);
-        
-%         imageinfo{i}  = imfinfo(imageFile);
-%         imageFocals(i) = imageinfo{i}.DigitalCamera.FocalLength;
-        
-%         image = image2cylindrical(image, 500, 0, 0, 0);
-%           image = image2spherical(image, 800, 0, 0, 0);
-        
+                
+        if strcmp(input.warpType,'spherical')
+            image = image2spherical(image, input.focalLength, input.k1, input.k2, input.k3);
+        elseif strcmp(input.warpType,'cylindrical')
+            image = image2cylindrical(image, input.focalLength, input.k1, input.k2, input.k3);
+        end
+
         % Replicate the third channel
         if imChannel == 1
             image = repmat(image, 1, 1, 3);
@@ -61,16 +61,9 @@ switch input.detector
     case 'HARRIS'
         points = detectHarrisFeatures(grayImage);
 
-    case 'SIFT'
-        [locations, features]  = vl_sift(single(grayImage), 'Octaves', 8);
-        features = features';
-        if ~isempty(locations)                
-            validPts = locations(1:2,:)';
-        else
-            validPts = [];                
-        end
-        
-%         points = detectSIFTFeatures(grayImage,'NumLayersInOctave',3);
+    case 'SIFT'        
+        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',5, ...
+                                    ContrastThreshold=0.00133, EdgeThreshold=20);
 
     case 'FAST'
         points   = detectFASTFeatures(grayImage);
@@ -90,11 +83,8 @@ switch input.detector
     otherwise
         error('Need a valid input!')
 end
-
-if ~(strcmp(input.detector, 'SIFT'))
     [features, validPts] = extractFeatures(grayImage, points);
     validPts = double(validPts.Location);
-end
 
 end
 

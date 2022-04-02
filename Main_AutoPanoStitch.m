@@ -2,10 +2,10 @@
 %//%*                 Automatic Panorama Image Stitcher                     *%
 %//%*           Stitches multiple images using feature points               *%
 %//%*                                                                       *%
-%//%*                    Name: Preetham Manjunatha                          *%
+%//%*                    Name: Dr. Preetham Manjunatha                      *%
 %//%*               GitHub: https://github.com/preethamam	                *%
 %//%*                   Repo Name: AutoPanoStitch                           *%
-%//%*                    Written Date: 07/28/2021                           *%
+%//%*                    Written Date: 04/01/2022                           *%
 %%***************************************************************************%
 %* Citation 1: Automatic Panoramic Image Stitching using Invariant Features.*% 
 %* M. Brown and D. Lowe. International Journal of Computer Vision. 74(1),   *%
@@ -21,61 +21,37 @@
 clear; close all; clc;
 clcwaitbarz = findall(0,'type','figure','tag','TMWWaitbar');
 delete(clcwaitbarz);
+
+%% Get inputs
+%--------------------------------------------------------------------------
+% Inputs file
+%--------------------------------------------------------------------------
+Inputs;
+
+%% Parallel workers start
+%--------------------------------------------------------------------------
+% Parallel pools
+%--------------------------------------------------------------------------
+if(isempty(gcp('nocreate')))
+    parpool(input.numCores);
+end
+
 Start = tic;
 warning('off','all')
 
-%% Inputs
-%--------------------------------------------------------------------------
-% I/O
-if ismac
-    % Code to run on Mac platform
-    folderPath      = '../../../Data/Generic';
-elseif isunix
-    % Code to run on Linux platform
-    folderPath      = '../../../Data/Generic';
-elseif ispc
-    % Code to run on Windows platform
-    folderPath      = '..\..\..\Data\Generic';
-else
-    disp('Platform not supported')
-end
-
-folderName      = '';
-
-%% Inputs 2
-% Feature matching
-input.detector = 'SIFT'; % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
-input.Matchingmethod = 'Approximate'; %'Exhaustive' (default) | 'Approximate'
-input.Matchingthreshold = 1.5; %10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
-input.Ratiothreshold = 0.6; % ratio in the range (0,1]
-
-% Image matching (RANSAC)
-input.Inliersconfidence = 99.9;
-input.maxIter = 2000;
-input.Transformationtype = 'projective'; %'rigid' | 'similarity' | 'affine' | 'projective'
-input.MaxDistance = 1.50; %1.5;
-
-% Image blending and panorama
-input.sigmaN = 10;
-input.sigmag = 0.1;
-input.resizeImage = 1;
-input.resizeStitchedImage = 1;
-input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'
-input.bands = 2;
-
-% Post-processing
-input.canvas_color = 'black';
-input.showCropBoundingBox = 1;
-input.blackRange = 0;
-input.whiteRange = 250;
-input.showPlot  = 1;
 
 %% Get image filenames and store image names
+%--------------------------------------------------------------------------
+% Image sets
+%--------------------------------------------------------------------------
 imgSetVector = imageSet(fullfile(folderPath,folderName),'recursive');
 datasetName  = cat(1,{imgSetVector.Description});
-
-%% Extract SIFT features
 folderLen = length(imgSetVector);
+
+%% Panorama stitcher
+%--------------------------------------------------------------------------
+% Stitches panoramas
+%--------------------------------------------------------------------------
 
 for myImg = 1
 
@@ -89,8 +65,8 @@ for myImg = 1
     %% Find matches        
     tic
     [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, images, keypoints, allDescriptors);
-    toc        
-    
+    toc               
+
     %% Bundle adjustment
     tic
     [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms);
@@ -100,6 +76,7 @@ for myImg = 1
     tic
     displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName);
     toc
+
 end
 
 %% End parameters

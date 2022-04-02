@@ -58,7 +58,9 @@ yimg = floor(f * yd + yc);
 mask = ximg > 0 & ximg <= xdim & yimg > 0 & yimg <= ydim;
 
 % Reshape the mask
-mask = repmat(mask,1,1,3);
+if bypixs == 3
+    mask = repmat(mask,1,1,3);
+end
 
 % Get projections
 imageCylindrical(mask) = image(mask);

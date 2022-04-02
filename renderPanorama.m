@@ -20,7 +20,11 @@ if input.resizeStitchedImage
         f = sqrt(area / maxArea);
         S_inv = inv(diag([f; f; 1]));
         for i = 1:n
-            tforms(i).T = tforms(i).T * S_inv;
+            tf = tforms(i).T * S_inv; 
+            tf(1:2,3) = 0;
+            tf(3,3) = 1;
+
+            tforms(i).T = single(tf);
         end
     end
 end

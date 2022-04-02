@@ -13,6 +13,10 @@
 %
 % Credits: Adapted from online code by Hao Jiang, Boston College at
 % http://www.phototalks.idv.tw/academic/?p=1275
+% Modified and improved by Dr. Preetham Manjunatha
+%
+%
+
 function [im] = multiBandBlending(input, warpedImages, warpedWeights) % assumes all images same size
 m = input.bands;
 k = length(warpedImages);
@@ -21,13 +25,41 @@ weights = cell(k, m);
 laplace = cell(k, m);
 blend = cell(1, m);
 
+% Gaussian filter
+h = fspecial('gaussian', input.filtSize, input.MBBsigma);
+
+% Create Wmax weights/images
+Wmax = cell(1,length(warpedWeights));
+
+wsum = cellfun(@(x) sum(x,3), warpedWeights, 'UniformOutput',false);
+wsum2 = cat(3,wsum{:});
+wsum3 = sum(wsum2,3);
+zeroInd = wsum3 == 0;
+
+[~, index] = max(wsum2,[],3,'omitnan');
+maxInd = index .* imcomplement(zeroInd);
+
+for i = 1:length(warpedWeights)    
+    Wmaxind = maxInd == i;
+    WmaxTemp    = zeros(size(warpedWeights{i}));
+
+    % Reshape the mask
+    WmaxMask = repmat(Wmaxind,1,1,3);
+    
+    % Fill ones
+    WmaxTemp(WmaxMask) = 1;
+
+    % Wmax final
+    Wmax{i} = WmaxTemp;
+end
+
 % Gaussian pyramid
 for i = 1:k
     gauss{i,1} = double(warpedImages{i}) ./ 255;
-    weights{i,1} = warpedWeights{i};
+    weights{i,1} = Wmax{i};
     for j = 2:m
-        gauss{i,j} = imresize(gauss{i,j-1}, 0.5);
-        weights{i,j} = imresize(weights{i,j-1}, 0.5, 'bilinear');
+        gauss{i,j} = imresize(imfilter(gauss{i,j-1}, h), 0.5);
+        weights{i,j} = imresize(imfilter(weights{i,j-1}, h), 0.5, 'bilinear');
     end
 end
 

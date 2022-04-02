@@ -23,6 +23,18 @@ switch input.Transformationtype
         tforms(n,n) = projective2d(eye(3));        
 end
 iterations = size(allMatches);
+ 
+if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+    nfmin = 2;
+elseif (strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid')) || ...
+        strcmp(input.Transformationtype,'similarity')
+    nfmin = 2;
+elseif strcmp(input.Transformationtype, 'affine')
+    nfmin = 3;
+else
+    nfmin = 4;
+end
+
 
 parfor i = 1:prod(iterations) 
     % IND2SUB converts from a "linear" index into individual
@@ -35,17 +47,40 @@ parfor i = 1:prod(iterations)
 
         % Image matching
         % Filter matches using RANSAC (model maps keypt i to keypt j)
-        if nf >= 4
+        if nf >= nfmin
             [inliers, model, status] = refineMatch(input, keypoints{ii}, keypoints{jj}, matches, ...
                                                    images{ii}, images{jj});
             ni = length(inliers);
 
             % Verify image matches using probabilistic model
-            if ni > 8 + 0.3 * nf %5.9 + 0.22 * nf % accept as correct image match
-                allMatches{i} = matches(:,inliers);
-                numMatches(i) = ni;
-                tforms(i)     = model;
+            if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+                if ni > 2 % accept as correct image match
+                    allMatches{i} = matches(:,inliers);
+                    numMatches(i) = ni;
+                    tforms(i) = model;
+                end
+
+            elseif strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid') || ...
+                   strcmp(input.Transformationtype, 'similarity')
+                if ni > 2 % accept as correct image match
+                    allMatches{i} = matches(:,inliers);
+                    numMatches(i) = ni;
+                    tforms(i) = model;
+                end
+            elseif strcmp(input.Transformationtype, 'affine')
+                 if ni > 3 % accept as correct image match
+                    allMatches{i} = matches(:,inliers);
+                    numMatches(i) = ni;
+                    tforms(i) = model;
+                end
+            else
+                if ni > 8 + 0.3 * nf %5.9 + 0.22 * nf % accept as correct image match
+                    allMatches{i} = matches(:,inliers);
+                    numMatches(i) = ni;
+                    tforms(i)     = model;
+                end
             end
+
         end
     end
 end
@@ -54,7 +89,7 @@ end
 iii = ones(size(allMatches));
 idx = find(tril(iii,-1));
 allMatches(idx) = {[]};
-numMatches = triu(numMatches,0) ;
+numMatches = triu(numMatches,0);
 
 end
 

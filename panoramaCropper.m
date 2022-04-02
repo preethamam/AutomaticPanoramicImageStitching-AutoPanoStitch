@@ -92,11 +92,17 @@ function croppedImage = panoramaCropper(input, stitchedImage)
     offsety = nl - hh + 1;
 
     % Cropped image
-    croppedImage = stitchedImage(offsety : offsety + cropH, offsetx : offsetx + cropW,:);  
+    try
+        croppedImage = stitchedImage(offsety : offsety + cropH, offsetx : offsetx + cropW,:);  
+    catch
+        warning('Cannot crop the image. Image has backgorund holes.');
+        croppedImage = stitchedImage;
+    end
+    
 
     % Show tight bounding box
     if (input.showCropBoundingBox)
-        figure; 
+        figure(1); 
         imshow(stitchedImage);
         hold on
         rectangle('Position',[offsetx offsety cropW cropH], 'EdgeColor', 'r', 'LineWidth', 2, 'LineStyle', '--')

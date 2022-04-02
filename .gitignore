@@ -17,6 +17,7 @@ node_modules
 *.MAT
 *.pdf
 *.PDF
+*.asv
 
 ScrachPaper.m
 
