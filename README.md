@@ -77,7 +77,7 @@ Currently, spherical, cyclindrical and planar projections stitching is supported
 3. Due to the rigid transformation and no straightening, some of the panaromas will be skewed.
 
 # Adaptation of open source 
-BUndle adjustment function in MATLAB is adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
+Bundle adjustment functions in MATLAB is adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
 
 # Licensing conditions
 This software is `LICENSED under The University of British Columbia`. This is being programmed and made available to public for research purposes only. Please cite the relevant citations as provided in the main file.
