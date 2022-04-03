@@ -82,7 +82,7 @@ Currently, spherical, cyclindrical and planar projections stitching is supported
 Bundle adjustment functions in MATLAB are adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
 
 # Licensing conditions
-This software is `LICENSED under The University of British Columbia`. This is being programmed and made available to public for research purposes only. Please cite the relevant citations as provided in the main file.
+The original implementation of the automatic panaroma stitching by Dr. Brown was written in C++ and is `LICENSED under The University of British Columbia`. This is being programmed and made available to public for academic / research purposes only. Please cite the relevant citations as provided in the main file.
 
 # MATLAB Central
 [![View Automatic panorama stitcher (AutoPanoStitch) on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/105850-automatic-panorama-stitcher-autopanostitch)
