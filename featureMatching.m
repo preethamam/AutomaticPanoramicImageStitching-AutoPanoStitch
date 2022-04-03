@@ -62,8 +62,8 @@ switch input.detector
         points = detectHarrisFeatures(grayImage);
 
     case 'SIFT'        
-        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',5, ...
-                                    ContrastThreshold=0.00133, EdgeThreshold=20);
+        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',3, ...
+                                    ContrastThreshold=0.00133, EdgeThreshold=40);
 
     case 'FAST'
         points   = detectFASTFeatures(grayImage);
@@ -85,6 +85,5 @@ switch input.detector
 end
     [features, validPts] = extractFeatures(grayImage, points);
     validPts = double(validPts.Location);
-
 end
 
