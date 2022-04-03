@@ -40,7 +40,7 @@ for cc = 1:ccnum
     center = indices(index);
     
     finalTforms = getTforms(input, tree, center, initialTforms);
-    
+
     if k < 2 % Skip if only one image in connected component
         finalPanoramaTforms{cc} = finalTforms;
         continue;

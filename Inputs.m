@@ -41,7 +41,7 @@ input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 % Image matching (RANSAC)
 input.Inliersconfidence = 99.9;         % Inlier confidence [0,100]
 input.maxIter = 2000;                   % RANSAC maximum iterations
-input.Transformationtype = 'rigid'; % 'rigid' | 'similarity' | 'affine' | 'projective'
+input.Transformationtype = 'affine'; % 'rigid' | 'similarity' | 'affine' | 'projective'
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
