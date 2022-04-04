@@ -1,4 +1,5 @@
-function displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName)
+function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, input, ...
+                                                images, imageFocals, concomps, myImg, datasetName)
 
 %%***********************************************************************%
 %*                   Automatic panorama stitching                       *%
@@ -9,6 +10,10 @@ function displayPanorama(finalPanoramaTforms, input, images, imageFocals, concom
 %* Date: 01/27/2022                                                     *%
 %************************************************************************%
 
+% Initialize
+allPanoramas = cell(1,length(finalPanoramaTforms));
+croppedPanoramas = cell(1,length(finalPanoramaTforms));
+
 for ii = 1:length(finalPanoramaTforms)
         % Create and display panorama
         [panorama, gainpanorama, gainImages, gainRGB, xCorrect, yCorrect] = ...
@@ -17,6 +22,10 @@ for ii = 1:length(finalPanoramaTforms)
         % Final panorama cropper
         croppedImage = panoramaCropper(input, panorama);   
         
+        % Store panoramas
+        allPanoramas{ii}     = panorama;
+        croppedPanoramas{ii} = croppedImage;
+
         % Plot the bounding boxes
         figure(2);
         imshow(croppedImage)
@@ -77,5 +86,21 @@ for ii = 1:length(finalPanoramaTforms)
         else
             disp('Platform not supported')
         end
+
+%         if ismac
+%             % Code to run on Mac platform
+%             imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
+%             num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+%         elseif isunix
+%             % Code to run on Linux platform
+%             imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
+%             num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+%         elseif ispc
+%             % Code to run on Windows platform
+%             imwrite(panorama, [ input.warpType '_' input.Transformationtype '_' ...
+%             num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+%         else
+%             disp('Platform not supported')
+%         end
 end
 end

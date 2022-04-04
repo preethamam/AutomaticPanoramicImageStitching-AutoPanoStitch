@@ -53,7 +53,7 @@ folderLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 6
+for myImg = 30
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     
@@ -74,7 +74,7 @@ for myImg = 6
 
     %% Render panoramas
     tic
-    displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName);
+    [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName);
     toc
 
 end

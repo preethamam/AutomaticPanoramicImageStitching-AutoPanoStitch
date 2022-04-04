@@ -22,11 +22,11 @@ folderName      = '';
 %% Inputs 2
 %--------------------------------------------------------------------------
 % Parallel workers
-input.numCores = 32;            % Number of cores for parallel processing
+input.numCores = 4;            % Number of cores for parallel processing
 
 %% Inputs 3
 % Warping
-input.warpType = 'cylindrical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+input.warpType = 'planar';   % 'spherical' | 'cylindrical' | 'planar' (projective)
 input.focalLength = 1200;       % focal length of camera in pixels
 input.k1 = 0;                   % Radial distortion coefficient
 input.k2 = 0;                   % Radial distortion coefficient
@@ -41,7 +41,7 @@ input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 % Image matching (RANSAC)
 input.Inliersconfidence = 99.9;         % Inlier confidence [0,100]
 input.maxIter = 2000;                   % RANSAC maximum iterations
-input.Transformationtype = 'affine'; % 'rigid' | 'similarity' | 'affine' | 'projective'
+input.Transformationtype = 'projective'; % 'rigid' | 'similarity' | 'affine' | 'projective'
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
