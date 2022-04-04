@@ -63,7 +63,7 @@ switch input.detector
 
     case 'SIFT'        
         points = detectSIFTFeatures(grayImage,'NumLayersInOctave',3, ...
-                                    ContrastThreshold=0.00133, EdgeThreshold=40);
+                                    ContrastThreshold=0.00133, EdgeThreshold=6);
 
     case 'FAST'
         points   = detectFASTFeatures(grayImage);
