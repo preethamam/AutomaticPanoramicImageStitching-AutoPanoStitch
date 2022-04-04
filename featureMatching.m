@@ -62,8 +62,9 @@ switch input.detector
         points = detectHarrisFeatures(grayImage);
 
     case 'SIFT'        
-        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',3, ...
-                                    ContrastThreshold=0.00133, EdgeThreshold=6);
+        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',input.NumLayersInOctave, ...
+                                    ContrastThreshold=input.ContrastThreshold, ...
+                                    EdgeThreshold=input.EdgeThreshold);
 
     case 'FAST'
         points   = detectFASTFeatures(grayImage);

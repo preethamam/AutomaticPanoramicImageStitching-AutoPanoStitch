@@ -26,7 +26,7 @@ input.numCores = 4;            % Number of cores for parallel processing
 
 %% Inputs 3
 % Warping
-input.warpType = 'planar';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+input.warpType = 'cylindrical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
 input.focalLength = 1200;       % focal length of camera in pixels
 input.k1 = 0;                   % Radial distortion coefficient
 input.k2 = 0;                   % Radial distortion coefficient
@@ -37,11 +37,18 @@ input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 
 input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
 input.Matchingthreshold = 1.5;  %       10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
+input.NumLayersInOctave = 3;            % Number of layers in each octave -- SIFT only
+input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the strongest features, 
+                                        % specified as a non-negative scalar in the range [0,1]. 
+                                        % The threshold is used to filter out weak features in 
+                                        % low-contrast regions of the image. -- SIFT only
+input.EdgeThreshold = 6;                % Edge threshold, specified as a non-negative scalar greater than or equal to 1. 
+                                        % The threshold is used to filter out unstable edge-like features  -- SIFT only  
 
 % Image matching (RANSAC)
 input.Inliersconfidence = 99.9;         % Inlier confidence [0,100]
 input.maxIter = 2000;                   % RANSAC maximum iterations
-input.Transformationtype = 'projective'; % 'rigid' | 'similarity' | 'affine' | 'projective'
+input.Transformationtype = 'affine'; % 'rigid' | 'similarity' | 'affine' | 'projective'
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
