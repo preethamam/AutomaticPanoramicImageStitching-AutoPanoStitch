@@ -22,7 +22,7 @@ folderName      = '';
 %% Inputs 2
 %--------------------------------------------------------------------------
 % Parallel workers
-input.numCores = 4;            % Number of cores for parallel processing
+input.numCores = 32;            % Number of cores for parallel processing
 
 %% Inputs 3
 % Warping
@@ -38,7 +38,7 @@ input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
 input.Matchingthreshold = 1.5;  %       10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 input.NumLayersInOctave = 3;            % Number of layers in each octave -- SIFT only
-input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the strongest features, 
+input.ContrastThreshold = 0.00133;       % Contrast threshold for selecting the strongest features, 
                                         % specified as a non-negative scalar in the range [0,1]. 
                                         % The threshold is used to filter out weak features in 
                                         % low-contrast regions of the image. -- SIFT only
