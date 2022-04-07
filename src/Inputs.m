@@ -5,13 +5,13 @@
 % Folder path
 if ismac
     % Code to run on Mac platform
-    folderPath      = '../../../../Data/Generic';
+    folderPath      = '../../../../../../Team Work/Team CrackSTITCH/Data/Generic';
 elseif isunix
     % Code to run on Linux platform
-    folderPath      = '../../../../Data/Generic';
+    folderPath      = '../../../../../../Team Work/Team CrackSTITCH/Data/Generic';
 elseif ispc
     % Code to run on Windows platform
-    folderPath      = '..\..\..\..\Data\Generic';
+    folderPath      = '..\..\..\..\..\..\Team Work\Team CrackSTITCH\Data\Generic';
 else
     disp('Platform not supported')
 end
