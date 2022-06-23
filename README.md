@@ -83,7 +83,7 @@ Currently, spherical, cyclindrical and planar projections stitching is supported
 # Known issues
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
 2. Gain compensation on large number of images is computationally slow.
-3. Due to the rigid transformation and no straightening, some of the panaromas will be skewed.
+3. Due to the rigid transformation and no straightening, some of the panoramas will be skewed.
 
 # Adaptation of open source 
 Bundle adjustment functions in MATLAB are adapted from the [Kevin Luo's GitHub Repo](https://github.com/kluo8128/cs231_project) and heavily improved.
