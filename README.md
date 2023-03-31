@@ -94,3 +94,5 @@ The original implementation of the automatic panaroma stitching by Dr. Brown was
 
 # MATLAB Central
 [![View Automatic panorama stitcher (AutoPanoStitch) on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/105850-automatic-panorama-stitcher-autopanostitch)
+
+Please rate and provide feedback for the further improvements.
