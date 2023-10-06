@@ -19,6 +19,7 @@ MATLAB <br />
 MATLAB Computer Vision Toolbox <br />
 MATLAB Image Processing Toolbox <br />
 MATLAB Parallel Computing Toolbox <br />
+MATLAB Optimization Toolbox
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program. Change the `folderPath      = '../../../Data/Generic';` to your desired folder path. Also, change the `folderName      = '';` to a valid name.
