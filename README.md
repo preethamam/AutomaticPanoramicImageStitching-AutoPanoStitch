@@ -125,5 +125,8 @@ Bundle adjustment functions in MATLAB are adapted from the [Kevin Luo's GitHub R
 # Licensing conditions
 The original implementation of the automatic panaroma stitching by Dr. Brown was written in C++ and is `LICENSED under The University of British Columbia`. This is being programmed and made available to public for academic / research purposes only. Please cite the relevant citations as provided in the main file.
 
+# Acknowledgements
+To all the authors who made the image stitching datasets public.
+
 # Feedback
 Please rate and provide feedback for the further improvements.
