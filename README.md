@@ -83,6 +83,18 @@ Depending on how your images are captured, panaroma being a `spherical`, `cylind
 
 Currently, spherical, cyclindrical and planar projections stitching is supported in this version and can recognize multiple panoramas. This work is in progress, further improvements such as inlcusion of a full view 360 x 180 degree panoramas stitching (everything visible from a point), automatic panorama straightening, runtime speed optimization and Graphical User Interface (GUI) are under development. Your patience will be appreciated.
 
+# Panorama datasets
+
+| Type | Images |
+| --- | --- |
+| CMU | ![dataset_samples_CMU0](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/2f671d2e-8653-4bcb-97d0-cda4f61c768c) |
+| Grand Canyon | ![dataset_samples_grandcanyon](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/a8992326-ab6e-4eae-9927-99cfc0a02e8f) |
+| Shanghai | ![dataset_samples_shanghai](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/511bb054-00b6-46da-827e-762ef889a8a4) |
+| UCSB | ![dataset_samples_ucsb4](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/d91316e6-f80c-47be-8d38-540cf6b14518) |
+| Yellowstone | ![dataset_samples_yellowstone](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/448af5f8-ac88-4a4e-8306-0b65bff37fcf) |
+| Rio | ![dataset_samples_rio](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/dfe34aa7-2d81-486f-9c97-1a1bdb16fc20) |
+
+
 # Known issues
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
 2. Gain compensation on large number of images is computationally slow.
