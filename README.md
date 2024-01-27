@@ -88,7 +88,7 @@ Creating image stitching takes a lot of time and effort. During my Ph.D. days, I
 
 All these datasets are public! Some of them were from my Ph.D. studies (especially on cracks) and most of them were downloaded from the internet. I do not remember the individual names of the dataset providers. But I acknowledge their work and I am thankful to all of them! I hope you appreciate their efforts in making these datasets public to advance the research!
 
-Below are some samples from the datasets. There are 85 `panorama` or `image stitching/registration` datasets in total. You can download them in [AutoPanoStitch Stitching Datasets Compilation](https://1drv.ms/f/s!AqjW7B7BO7JJgdB7hSu2vu8OOefG4Q). 
+Below are some samples from the datasets. There are 85 `panorama` or `image stitching/registration` datasets in total. You can download them in [AutoPanoStitch Stitching Datasets Compilation](https://1drv.ms/f/s!AqjW7B7BO7JJgdB7hSu2vu8OOefG4Q). If I come across any interesting and challenging datasets, I will expand this compilation.
 | Type | Images |
 | --- | --- |
 | CMU | ![dataset_samples_CMU0](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/2f671d2e-8653-4bcb-97d0-cda4f61c768c) |
