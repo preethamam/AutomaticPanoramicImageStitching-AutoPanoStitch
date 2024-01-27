@@ -98,6 +98,20 @@ Below are some samples from the datasets. There are 85 `panorama` or `image stit
 | Yellowstone | ![dataset_samples_yellowstone](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/448af5f8-ac88-4a4e-8306-0b65bff37fcf) |
 | Rio | ![dataset_samples_rio](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/dfe34aa7-2d81-486f-9c97-1a1bdb16fc20) |
 
+## Citation
+Image stitching datasets for cracks are available to the public. If you use this specific dataset (related to cracks) in your research, please use the following BibTeX entry to cite:
+```bibtex
+@PhdThesis{preetham2021vision,
+author = {{Aghalaya Manjunatha}, Preetham},
+title = {Vision-Based and Data-Driven Analytical and Experimental Studies into Condition Assessment and Change Detection of Evolving Civil, Mechanical and Aerospace Infrastructures},
+school =  {University of Southern California},
+year = 2021,
+type = {Dissertations & Theses},
+address = {3550 Trousdale Parkway Los Angeles, CA 90089},
+month = {December},
+note = {Condition assessment, Crack localization, Crack change detection, Synthetic crack generation, Sewer pipe condition assessment, Mechanical systems defect detection and quantification}
+}
+```
 
 # Known issues
 1. Bundle adjustment using the `lsqnonlin` in MATLAB is computationally slow.
