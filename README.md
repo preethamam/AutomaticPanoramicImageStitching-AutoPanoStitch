@@ -91,12 +91,12 @@ All these datasets are public! Some of them were from my Ph.D. studies (especial
 Below are some samples from the datasets. There are 85 `panorama` or `image stitching/registration` datasets in total. You can download them in [AutoPanoStitch Stitching Datasets Compilation](https://1drv.ms/f/s!AlFYM4jwmzqrtaBpxVMpJegvN9QVZw?e=UIaYug). If I come across any interesting and challenging datasets, I will expand this compilation.
 | Type | Images |
 | --- | --- |
-| CMU | ![dataset_samples_CMU0](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/2f671d2e-8653-4bcb-97d0-cda4f61c768c) |
-| Grand Canyon | ![dataset_samples_grandcanyon](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/a8992326-ab6e-4eae-9927-99cfc0a02e8f) |
-| Shanghai | ![dataset_samples_shanghai](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/511bb054-00b6-46da-827e-762ef889a8a4) |
-| UCSB | ![dataset_samples_ucsb4](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/d91316e6-f80c-47be-8d38-540cf6b14518) |
-| Yellowstone | ![dataset_samples_yellowstone](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/448af5f8-ac88-4a4e-8306-0b65bff37fcf) |
-| Rio | ![dataset_samples_rio](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/dfe34aa7-2d81-486f-9c97-1a1bdb16fc20) |
+| CMU | ![dataset_samples_CMU0](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/52abe23a-b44f-4891-9712-6a0bc3ab324e) |
+| Grand Canyon | ![dataset_samples_grandcanyon](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/7f24d1ce-4b4c-4107-b2c3-46ebd2e33575) |
+| Shanghai | ![dataset_samples_shanghai](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/6c6f57a5-ae1d-467b-9245-5da3eaa3a742) |
+| UCSB | ![dataset_samples_ucsb4](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/ed88cf0a-54c2-4441-b719-146a9d323f78) |
+| Yellowstone | ![dataset_samples_yellowstone](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/2c8ebb37-8e75-410f-b66f-2d504096cea7) |
+| Rio | ![dataset_samples_rio](https://github.com/preethamam/AutomaticPanoramicImageStitching-AutoPanoStitch/assets/28588878/a335d043-6049-406f-ba72-36ed31f5862f) |
 
 ## Citation
 Image stitching datasets for cracks are available to the public. If you use this specific dataset (related to cracks) in your research, please use the following BibTeX entry to cite:
