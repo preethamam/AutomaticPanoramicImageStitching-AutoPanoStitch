@@ -5,13 +5,13 @@
 % Folder path
 if ismac
     % Code to run on Mac platform
-    folderPath      = '../../../../../../Team Work/Team CrackSTITCH/Data/Generic';
+    folderPath      = '../../../../../../../Team Work/Team CrackSTITCH/Datasets/Generic';
 elseif isunix
     % Code to run on Linux platform
-    folderPath      = '../../../../../../Team Work/Team CrackSTITCH/Data/Generic';
+    folderPath      = '../../../../../../../Team Work/Team CrackSTITCH/Datasets/Generic';
 elseif ispc
     % Code to run on Windows platform
-    folderPath      = '..\..\..\..\..\..\Team Work\Team CrackSTITCH\Data\Generic';
+    folderPath      = '..\..\..\..\..\..\..\Team Work\Team CrackSTITCH\Datasets\Generic';
 else
     disp('Platform not supported')
 end
@@ -26,11 +26,14 @@ input.numCores = 32;            % Number of cores for parallel processing
 
 %% Inputs 3
 % Warping
-input.warpType = 'cylindrical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
-input.focalLength = 1200;       % focal length of camera in pixels
-input.k1 = 0;                   % Radial distortion coefficient
-input.k2 = 0;                   % Radial distortion coefficient
-input.k3 = 0;                   % Radial distortion coefficient
+input.warpType = 'spherical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+
+% Focal length
+input.fx = 1600;       % focal length of camera in pixels
+input.fy = 1600;       % focal length of camera in pixels
+
+% Distortion coefficients [k1, k2, k3, p1, p2]
+input.DC = [0, 0, 0, 0, 0];
 
 % Feature matching
 input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
