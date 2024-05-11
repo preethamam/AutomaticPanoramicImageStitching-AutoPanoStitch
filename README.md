@@ -95,11 +95,11 @@ Below are some samples from the datasets. There are 85 `panorama` or `image stit
 | Type | Images |
 | --- | --- |
 | CMU | ![dataset_samples_CMU0](assets/dataset_samples_CMU0.png) |
-| Grand Canyon | ![dataset_samples_grandcanyon](assets/dataset_samples_grandcanyon) |
-| Shanghai | ![dataset_samples_shanghai](assets/dataset_samples_shanghai) |
-| UCSB | ![dataset_samples_ucsb4](assets/dataset_samples_ucsb4) |
-| Yellowstone | ![dataset_samples_yellowstone](assets/dataset_samples_yellowstone) |
-| Rio | ![dataset_samples_rio](assets/dataset_samples_rio) |
+| Grand Canyon | ![dataset_samples_grandcanyon](assets/dataset_samples_grandcanyon.png) |
+| Shanghai | ![dataset_samples_shanghai](assets/dataset_samples_shanghai.png) |
+| UCSB | ![dataset_samples_ucsb4](assets/dataset_samples_ucsb4.png) |
+| Yellowstone | ![dataset_samples_yellowstone](assets/dataset_samples_yellowstone.png) |
+| Rio | ![dataset_samples_rio](assets/dataset_samples_rio.png) |
 
 ## Citation
 Image stitching datasets for cracks are available to the public. If you use this specific dataset (related to cracks) in your research, please use the following BibTeX entry to cite:
