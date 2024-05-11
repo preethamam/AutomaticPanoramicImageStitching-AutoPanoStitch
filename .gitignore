@@ -21,6 +21,17 @@ node_modules
 
 ScrachPaper.m
 !Readme.txt
+!assets/church_01.jpeg
+!assets/church_02.jpeg
+!assets/church_03.jpeg
+!assets/dataset_samples_CMU0.png
+!assets/dataset_samples_grandcanyon.png
+!assets/dataset_samples_rio.png
+!assets/dataset_samples_shanghai.png
+!assets/dataset_samples_ucsb4.png
+!assets/dataset_samples_yellowstone.png
+!assets/grand_canyon_01.jpeg
+!assets/grand_canyon_02.jpeg
 
 # Ignore files related to API keys
 .env

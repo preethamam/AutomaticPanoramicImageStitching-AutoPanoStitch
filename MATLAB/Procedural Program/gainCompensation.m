@@ -146,7 +146,7 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     gG = gainmatG \ b;
     gB = gainmatB \ b;
 
-    gainRGB = [gR, gG, gB];
+    gainRGB = [gR, gG, gB]
 
     % --------------------------------------------------------------------------------------------------------------
     % Compensate gains for images

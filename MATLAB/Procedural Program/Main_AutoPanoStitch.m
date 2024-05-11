@@ -45,7 +45,7 @@ warning('off','all')
 % Image sets
 %--------------------------------------------------------------------------
 imgSetVector = imageSet(fullfile(folderPath,folderName),'recursive');
-datasetName  = cat(1,{imgSetVector.Description});
+datasetName  = cat(1,{imgSetVector.Description})';
 folderLen = length(imgSetVector);
 
 %% Panorama stitcher
@@ -53,7 +53,7 @@ folderLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 22
+for myImg = 56 %19, 56, 84, 85, 48, 42, 12 (cylindrical-affine)
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     

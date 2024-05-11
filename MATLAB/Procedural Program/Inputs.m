@@ -29,8 +29,8 @@ input.numCores = 32;            % Number of cores for parallel processing
 input.warpType = 'spherical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
 
 % Focal length
-input.fx = 1600;       % focal length of camera in pixels
-input.fy = 1600;       % focal length of camera in pixels
+input.fx = 1200;       % focal length of camera in pixels
+input.fy = 1200;       % focal length of camera in pixels
 
 % Distortion coefficients [k1, k2, k3, p1, p2]
 input.DC = [0, 0, 0, 0, 0];
