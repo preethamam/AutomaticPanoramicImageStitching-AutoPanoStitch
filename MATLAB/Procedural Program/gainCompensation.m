@@ -16,144 +16,74 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     sigmag = input.sigmag;
 
     panoramasize = size(warpedImages{1});
-    Iij = cell(n);
-    Iji = cell(n);
-    Nij = zeros(n);
+    Amat = cell(n);
+    Bvec = zeros(n,1);   
+    IuppeIdx = nonzeros(triu(reshape(1:numel(Amat), size(Amat))));
+    Amat_temp = cell(1,length(IuppeIdx));    
+    matSize = size(Amat);     
+    
+    % Get the Ibarijs and Nijs
+    for i = 1:length(IuppeIdx)        
+        [ii,jj] = ind2sub(matSize, IuppeIdx(i)); 
+        if ii == jj
+            diag_val_1 = 0;
+            diag_val_2 = 0;
+            diag_val = 0;
+           
+            Z = 1:n;
+            Z(Z==ii) = [];
+            for d = Z
+                [Ibarij, Ibarji, Nij] = getIbarNij(panoramasize, warpedImages, ii, d);
+                diag_val_1 = diag_val_1 + ( (Nij + Nij) .*  Ibarij.^2 );
+                diag_val_2 = diag_val_2 + Nij;
+            end
 
-    matSize = size(Iij);
-    IuppeIdx = nonzeros(triu(reshape(1:numel(Iij), size(Iij))));
-    Ibarijvalue = cell(length(IuppeIdx),1);
-    Ibarjivalue = cell(length(IuppeIdx),1);
-    Nijvalue    = zeros(length(IuppeIdx),1);
+            diag_val = diag_val_1 + (sigmaN^2/sigmag^2) * diag_val_2;
 
-    parfor i = 1:length(IuppeIdx)
-        
-        [ii,jj] = ind2sub(matSize, IuppeIdx(i));
+            Amat_temp{i} = diag_val;
+            Bvec(i) = (sigmaN^2/sigmag^2) * diag_val_2;
+        end       
 
         if ii ~= jj
-            Ibarij = zeros(panoramasize,'uint8');
-            Ibarji = zeros(panoramasize,'uint8');
-        
-            % Overlay the warpedImage onto the panorama.
-            maski = imbinarize(rgb2gray(255 * warpedImages{ii}));  
-            maskj = imbinarize(rgb2gray(255 * warpedImages{jj}));
-    
-            Nij_im  = maski & maskj;
-            Nij_im  = imfill(Nij_im, 'holes');
-    
-            Nijidx = repmat(Nij_im, 1, 1, 3);
-    
-            Imij = warpedImages{ii};
-            Imji = warpedImages{jj};
-    
-            Ibarij(Nijidx) = Imij(Nijidx);
-            Ibarji(Nijidx) = Imji(Nijidx);
-            
-            Ibarij_double = double(Ibarij);
-            Ibarji_double = double(Ibarji);
-    
-            Nij_sum = sum(sum(Nij_im));
-            
-            Ibarijvalue{i} = reshape(sum(sum(Ibarij_double)) ./ Nij_sum, 1, 3);
-            Ibarjivalue{i} = reshape(sum(sum(Ibarji_double)) ./ Nij_sum, 1, 3); 
-
-            Nijvalue(i)    = Nij_sum;
+            [Ibarij,Ibarji,Nij] = getIbarNij(panoramasize, warpedImages, ii, jj);
+            Amat_temp{i} = -(Nij+Nij) .* (Ibarij .* Ibarji);
         end
 
     end
 
     % --------------------------------------------------------------------------------------------------------------
     % Form matrices
-    Iij(triu(true(n))) = Ibarijvalue;
-    Iji(triu(true(n))) = Ibarjivalue;
-    Nij(triu(true(n))) = Nijvalue;
+    updiagIdx = nonzeros(triu(reshape(1:numel(Amat), size(Amat)),1));
+    lowdiagIdx = nonzeros(tril(reshape(1:numel(Amat), size(Amat)),-1));
+    
+    % Populate A matrix
+    Amat(IuppeIdx) = Amat_temp;
+    Amat(lowdiagIdx) = Amat(updiagIdx);
+    Bvec = nonzeros(Bvec);    
+    Amat = cell2mat(Amat);    
 
-    Iijc = Iij;
-    Ijic = Iji;
-
-    iii = ones(size(Iij));
-    idx = find(tril(iii,-1));
-
-    Iijp = Iij';
-    Ijip = Iji';
-
-    Iijc(idx) = Iijp(idx);
-    Ijic(idx) = Ijip(idx);
-
-    Iij = Iijc;
-    Iji = Ijic;
-    Nij = Nij + tril(Nij',-1);
-
-    Iij = cellfun(@(M) subsasgn(M, substruct('()', {isnan(M)}), 0), Iij, 'uniform', 0); %#ok<*SUBSASGN> 
-    Iji = cellfun(@(M) subsasgn(M, substruct('()', {isnan(M)}), 0), Iji, 'uniform', 0);
-
-    % --------------------------------------------------------------------------------------------------------------
-    % Gain values matrix
-    gainmatR = zeros(n);
-    gainmatG = zeros(n);
-    gainmatB = zeros(n);
-
-    gainR    = zeros(length(IuppeIdx),1);
-    gainG    = zeros(length(IuppeIdx),1);
-    gainB    = zeros(length(IuppeIdx),1);
-
-    parfor i = 1:length(IuppeIdx)
-
-        [ii,jj] = ind2sub(matSize, IuppeIdx(i));
-
-        if ii ~= jj
-            gainR(i) = -(Nij(ii,jj) * Iij{ii,jj}(1) * Iji{jj,ii}(1) + Nij(jj,ii) * Iij{jj,ii}(1) * Iji{jj,ii}(1)) / sigmaN^2;
-            gainG(i) = -(Nij(ii,jj) * Iij{ii,jj}(2) * Iji{jj,ii}(2) + Nij(jj,ii) * Iij{jj,ii}(2) * Iji{jj,ii}(2)) / sigmaN^2;
-            gainB(i) = -(Nij(ii,jj) * Iij{ii,jj}(3) * Iji{jj,ii}(3) + Nij(jj,ii) * Iij{jj,ii}(3) * Iji{jj,ii}(3)) / sigmaN^2;
-        else
-
-            gainRval = 0;
-            gainGval = 0;
-            gainBval = 0;
-
-            for iii = 1:n
-                if iii ~= ii
-                    gainRval = gainRval + (((Nij(ii,iii) * Iij{ii,iii}(1)^2 + Nij(iii,ii) * Iji{ii,iii}(1)^2) / sigmaN^2) + (Nij(ii,iii) / sigmag^2));
-                    gainGval = gainGval + (((Nij(ii,iii) * Iij{ii,iii}(2)^2 + Nij(iii,ii) * Iji{ii,iii}(2)^2) / sigmaN^2) + (Nij(ii,iii) / sigmag^2));
-                    gainBval = gainBval + (((Nij(ii,iii) * Iij{ii,iii}(3)^2 + Nij(iii,ii) * Iji{ii,iii}(3)^2) / sigmaN^2) + (Nij(ii,iii) / sigmag^2));
-                end
-            end
-            gainR(i) = gainRval;
-            gainG(i) = gainGval;
-            gainB(i) = gainBval;
-        end
-    end
-
-    % Make matrices
-    gainmatR(triu(true(n))) = gainR;
-    gainmatG(triu(true(n))) = gainG;
-    gainmatB(triu(true(n))) = gainB;
-
-    gainmatR = gainmatR + tril(gainmatR',-1);
-    gainmatG = gainmatG + tril(gainmatG',-1);
-    gainmatB = gainmatB + tril(gainmatB',-1);
+    % A matrix gain values
+    gainmatR = Amat(:,1:3:size(Amat,2));
+    gainmatG = Amat(:,2:3:size(Amat,2));
+    gainmatB = Amat(:,3:3:size(Amat,2));
 
     % --------------------------------------------------------------------------------------------------------------
     % AX = b --> X = A \ b
-    b = zeros(n,1);
-    parfor j = 1:n
-        for i = 1:n
-            b(j) = b(j) + (Nij(j,i) / sigmag^2); %#ok<*PFBNS> 
-        end
-    end
+    gR = gainmatR \ Bvec;
+    gG = gainmatG \ Bvec;
+    gB = gainmatB \ Bvec;
+    
+    % Concatenate RGB gains
+    gainRGB = [gR, gG, gB]; 
 
-    gR = gainmatR \ b;
-    gG = gainmatG \ b;
-    gB = gainmatB \ b;
-
-    gainRGB = [gR, gG, gB]
+    % Clip gain values to 1
+    gainRGB = min(gainRGB,1);
 
     % --------------------------------------------------------------------------------------------------------------
-    % Compensate gains for images
-    parfor i = 1:n
-        gain = reshape([gR(i), gG(i), gB(i)], [1,1,3]); 
-        gainImages{i} = uint8(double(warpedImages{i}) .* gain);
-    end
+    % Compensate gains for images        
+    gains = num2cell(gainRGB,2);
+    gains = cellfun(@(x) reshape(x, [1,1,3]), gains, 'UniformOutput',false);
+    gainImages = cellfun(@(x,y) uint8(double(x).*y), warpedImages, gains,'UniformOutput',false);
 
     % --------------------------------------------------------------------------------------------------------------
     % Construct gain comepensated panorama      
@@ -173,4 +103,50 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     end
     
     gainpanorama = uint8(reshape(panorama,[iterations,3]));     
+end
+
+%--------------------------------------------------------------------------------------------------------
+% Auxillary functions
+%--------------------------------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------------------------------
+% [Ibarij,Ibarji,Nij] = getIbarNij(panoramasize, warpedImages, ii, jj)
+%--------------------------------------------------------------------------------------------------------
+%
+% Returns the Ibars and Nij values.
+function [Ibarij,Ibarji,Nij] = getIbarNij(panoramasize, warpedImages, ii, jj)
+    Ibarij = zeros(panoramasize,'uint8');
+    Ibarji = zeros(panoramasize,'uint8');
+    
+    % Overlay the warpedImage onto the panorama.
+    maski = imbinarize(rgb2gray(255 * warpedImages{ii}));  
+    maskj = imbinarize(rgb2gray(255 * warpedImages{jj}));
+    
+    % Find the overlap mask
+    Nij_im  = maski & maskj;
+    Nij_im  = imfill(Nij_im, 'holes');    
+    Nijidx = repmat(Nij_im, 1, 1, 3);
+    
+    % Warped images
+    Imij = warpedImages{ii};
+    Imji = warpedImages{jj};
+    
+    % Get the overlapping region RGB values for two images
+    Ibarij(Nijidx) = Imij(Nijidx);
+    Ibarji(Nijidx) = Imji(Nijidx);
+    
+    % Convert to double
+    Ibarij_double = double(Ibarij);
+    Ibarji_double = double(Ibarji);
+    
+    % Nij
+    Nij = sum(sum(Nij_im));
+    
+    % Ibar ijs
+    Ibarij = reshape(sum(sum(Ibarij_double)) ./ Nij, 1, 3);
+    Ibarji = reshape(sum(sum(Ibarji_double)) ./ Nij, 1, 3); 
+    
+    % Replace NaNs by zeros
+    Ibarij(isnan(Ibarij)) = 0;
+    Ibarji(isnan(Ibarji)) = 0;
 end

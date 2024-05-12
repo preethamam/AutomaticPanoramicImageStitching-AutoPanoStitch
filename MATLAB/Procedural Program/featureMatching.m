@@ -21,9 +21,9 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
         K = [input.fx, 0, imCols/2; 0, input.fy, imRows/2; 0, 0, 1];
 
         if strcmp(input.warpType,'spherical')
-            image = image2spherical_v1(image, K, input.DC);
+            image = image2spherical(image, K, input.DC);
         elseif strcmp(input.warpType,'cylindrical')
-            image = image2cylindrical_v1(image, K, input.DC);
+            image = image2cylindrical(image, K, input.DC);
         end
 
         % Replicate the third channel
