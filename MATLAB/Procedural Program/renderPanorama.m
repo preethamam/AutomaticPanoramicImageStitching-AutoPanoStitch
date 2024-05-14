@@ -39,10 +39,13 @@ indices = find(ccs == cc);
 if numel(indices) == 1
     panorama = images{indices};
     gainpanorama = images{indices};
+    noBlendCompensationPanorama = [];
     gainImages = [];
     gainRGB = []; 
+    warpedImages = [];
     xCorrect = []; 
     yCorrect = [];
+
     warning('Single image detected. No panorama created!')
     
 else
@@ -112,7 +115,7 @@ else
             warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
                                         warpedImages, 'UniformOutput',false);
             panorama = zeros(size(warpedImages{1}), 'uint8');
-            for i = 1:n
+            for i = 1:length(warpedImages)
                 panorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
             end
             
@@ -137,7 +140,7 @@ else
             warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
                                         warpedImages, 'UniformOutput',false);
             noBlendCompensationPanorama = zeros(size(warpedImages{1}), 'uint8');
-            for i = 1:n
+            for i = 1:length(warpedImages)
                 noBlendCompensationPanorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
             end
     
@@ -156,7 +159,7 @@ else
             warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
                                         warpedImages, 'UniformOutput',false);
             noBlendCompensationPanorama = zeros(size(warpedImages{1}), 'uint8');
-            for i = 1:n
+            for i = 1:length(warpedImages)
                 noBlendCompensationPanorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
             end
 

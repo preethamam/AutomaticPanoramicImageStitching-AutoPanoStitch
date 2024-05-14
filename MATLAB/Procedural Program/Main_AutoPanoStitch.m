@@ -57,7 +57,7 @@ foldersLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 57 %1:foldersLen
+for myImg = 22 %1:foldersLen
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     
