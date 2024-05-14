@@ -102,7 +102,7 @@ function croppedImage = panoramaCropper(input, stitchedImage)
 
     % Show tight bounding box
     if (input.showCropBoundingBox)
-        figure(1); 
+        figure('Name','Crop rectangle panorama image');
         imshow(stitchedImage);
         hold on
         rectangle('Position',[offsetx offsety cropW cropH], 'EdgeColor', 'r', 'LineWidth', 2, 'LineStyle', '--')

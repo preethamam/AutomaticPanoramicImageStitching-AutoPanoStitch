@@ -33,7 +33,11 @@ Inputs;
 % Parallel pools
 %--------------------------------------------------------------------------
 if(isempty(gcp('nocreate')))
-    parpool(input.numCores);
+    if strcmp(input.poolType,'numcores')
+        parpool(input.numCores);
+    else
+        parpool('Threads')
+    end
 end
 
 Start = tic;
@@ -46,14 +50,14 @@ warning('off','all')
 %--------------------------------------------------------------------------
 imgSetVector = imageSet(fullfile(folderPath,folderName),'recursive');
 datasetName  = cat(1,{imgSetVector.Description})';
-folderLen = length(imgSetVector);
+foldersLen = length(imgSetVector);
 
 %% Panorama stitcher
 %--------------------------------------------------------------------------
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 12 %22 19, 56, 84, 85, 48, 42, 12 (cylindrical-affine) % 48, 46, 12
+for myImg = 57 %1:foldersLen %56 %22 19, 56, 84, 85, 48, 42, 12 (cylindrical-affine) % 48, 42, 12, 57
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     

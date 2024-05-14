@@ -23,6 +23,7 @@ folderName      = '';
 %--------------------------------------------------------------------------
 % Parallel workers
 input.numCores = 32;            % Number of cores for parallel processing
+input.poolType = 'numcores';     % 'numcores' | 'Threads'
 
 %% Inputs 3
 % Warping
@@ -41,7 +42,7 @@ input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
 input.Matchingthreshold = 1.5;  %       10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 input.NumLayersInOctave = 3;            % Number of layers in each octave -- SIFT only
-input.ContrastThreshold = 0.00133;       % Contrast threshold for selecting the strongest features, 
+input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the strongest features, 
                                         % specified as a non-negative scalar in the range [0,1]. 
                                         % The threshold is used to filter out weak features in 
                                         % low-contrast regions of the image. -- SIFT only
@@ -55,6 +56,7 @@ input.Transformationtype = 'affine'; % 'rigid' | 'similarity' | 'affine' | 'proj
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
+input.gain_derivation = 1;          % Two types of gain matrix derivations 1 or 2 (both leads to same results with some roundoffs)
 input.sigmaN = 10;                  % Standard deviations of the normalised intensity error
 input.sigmag = 0.1;                 % Standard deviations of the gain
 input.resizeImage = 1;              % Resize input images

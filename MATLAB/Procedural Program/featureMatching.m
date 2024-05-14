@@ -17,6 +17,17 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
         % Get size of the image
         [imRows, imCols, imChannel] = size(image);
         
+        % Image resize
+        if input.resizeImage
+            if imRows > 480 && imCols > 640
+                image = imresize(image,[480, 640]);
+            elseif imRows > 480 && imCols < 640
+                image = imresize(image,[480, imCols]);
+            elseif imRows < 480 && imCols > 640
+                image = imresize(image,[imRows, 640]);
+            end
+        end
+
         % Camera intrinsics
         K = [input.fx, 0, imCols/2; 0, input.fy, imRows/2; 0, 0, 1];
 
@@ -31,16 +42,7 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
             image = repmat(image, 1, 1, 3);
         end
         
-        % Image resize
-        if input.resizeImage
-            if imRows > 480 && imCols > 640
-                image = imresize(image,[480, 640]);
-            elseif imRows > 480 && imCols < 640
-                image = imresize(image,[480, imCols]);
-            elseif imRows < 480 && imCols > 640
-                image = imresize(image,[imRows, 640]);
-            end
-        end
+        % Stack images
         images{i} = image;
 
         % Get features and valid points

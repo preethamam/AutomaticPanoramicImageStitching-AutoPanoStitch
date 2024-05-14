@@ -7,7 +7,8 @@
 %* Date: 01/27/2022                                                     *%
 %************************************************************************%
 
-function [panorama, gainpanorama, gainImages, gainRGB, xCorrect, yCorrect] = ...
+function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
+            gainRGB, warpedImages, xCorrect, yCorrect] = ...
             renderPanorama(input, images, focalLengths, tforms, ccs, cc)
 n = length(tforms);
 
@@ -107,25 +108,19 @@ else
     
     switch input.blending
         case 'none'
-            % Apply no blending        
-            iterations = size(warpedImages{1},1:2);
-            panorama = zeros(prod(iterations),3);
-    
-            for im = 1:length(warpedImages)
-                nextImage = warpedImages{im};
-                parfor i = 1:prod(iterations) 
-                    % IND2SUB converts from a "linear" index into individual
-                    % subscripts
-                    [ii,jj] = ind2sub(iterations, i);          
-                    if sum(nextImage(ii,jj,:)) ~= 0
-                        panorama(i,:) = nextImage(ii,jj,:);
-                    end
-                end
+            % Panorama creation
+            warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
+                                        warpedImages, 'UniformOutput',false);
+            panorama = zeros(size(warpedImages{1}), 'uint8');
+            for i = 1:n
+                panorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
             end
-            panorama = uint8(reshape(panorama,[iterations,3]));  
             
-            % Gain compensation
-            [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages);
+            % Gain compensation null values
+            gainpanorama = []; 
+            gainImages = [];  
+            gainRGB = []; 
+            noBlendCompensationPanorama = [];
     
         case 'linear'
             % Gain compensation
@@ -133,14 +128,36 @@ else
     
             % Apply linear blending
             panorama = linearBlending(input, gainImages, warpedWeights);
+
+            % No compensation or blend panorama creation
+            warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
+                                        warpedImages, 'UniformOutput',false);
+            noBlendCompensationPanorama = zeros(size(warpedImages{1}), 'uint8');
+            for i = 1:n
+                noBlendCompensationPanorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
+            end
     
         case 'multiband'
+            tic
             % Gain compensation
             [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages);
+            fprintf('Gain compensation: %f\n', toc);
     
             % Apply multi-band blending
+            tic
             panorama = multiBandBlending(input, gainImages, warpedWeights);
+            fprintf('Multi-band blending: %f\n', toc);
+
+            % No compensation or blend panorama creation
+            warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
+                                        warpedImages, 'UniformOutput',false);
+            noBlendCompensationPanorama = zeros(size(warpedImages{1}), 'uint8');
+            for i = 1:n
+                noBlendCompensationPanorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
+            end
+
         otherwise
+            error('Please select blending mode.')
     end
 end
 end
