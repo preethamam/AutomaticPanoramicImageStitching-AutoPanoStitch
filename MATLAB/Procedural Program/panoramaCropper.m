@@ -1,13 +1,13 @@
 function croppedImage = panoramaCropper(input, stitchedImage)
     
-%%***********************************************************************%
-%*                   Automatic panorama stitching                       *%
-%*                        Panorama cropper                              *%
-%*                                                                      *%
-%* Code author: Preetham Manjunatha                                     *%
-%* Github link: https://github.com/preethamam                           *%
-%* Date: 01/27/2022                                                     *%
-%************************************************************************%
+    %%***********************************************************************%
+    %*                   Automatic panorama stitching                       *%
+    %*                        Panorama cropper                              *%
+    %*                                                                      *%
+    %* Code author: Preetham Manjunatha                                     *%
+    %* Github link: https://github.com/preethamam                           *%
+    %* Date: 01/27/2022                                                     *%
+    %************************************************************************%
 
     % Initilize the variables
     w = size(stitchedImage,2);

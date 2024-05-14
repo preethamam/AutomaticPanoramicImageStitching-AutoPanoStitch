@@ -1,96 +1,95 @@
 function [allMatches, numMatches, tforms] = imageMatching(input, n, images, keypoints, allDescriptors)
 
-%%***********************************************************************%
-%*                   Automatic panorama stitching                       *%
-%*                        Image matching                                *%
-%*                                                                      *%
-%* Code author: Preetham Manjunatha                                     *%
-%* Github link: https://github.com/preethamam                           *%
-%* Date: 01/27/2022                                                     *%
-%************************************************************************%
-
-% Initialize
-allMatches = cell(n);
-numMatches = zeros(n);
-switch input.Transformationtype
-    case 'rigid' 
-        tforms(n,n) = rigid2d(eye(3));
-    case 'similarity' 
-        tforms(n,n) = affine2d(eye(3));
-    case 'affine' 
-        tforms(n,n) = affine2d(eye(3));
-    case 'projective'
-        tforms(n,n) = projective2d(eye(3));        
-end
-iterations = size(allMatches);
- 
-if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
-    nfmin = 2;
-elseif (strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid')) || ...
-        strcmp(input.Transformationtype,'similarity')
-    nfmin = 2;
-elseif strcmp(input.Transformationtype, 'affine')
-    nfmin = 3;
-else
-    nfmin = 4;
-end
-
-
-parfor i = 1:prod(iterations) 
-    % IND2SUB converts from a "linear" index into individual
-    % subscripts
-    [ii,jj] = ind2sub(iterations, i);
+    %%***********************************************************************%
+    %*                   Automatic panorama stitching                       *%
+    %*                        Image matching                                *%
+    %*                                                                      *%
+    %* Code author: Preetham Manjunatha                                     *%
+    %* Github link: https://github.com/preethamam                           *%
+    %* Date: 01/27/2022                                                     *%
+    %************************************************************************%
     
-    if (ii~=jj)
-        matches = getMatches(input, allDescriptors{ii}, allDescriptors{jj});
-        nf = size(matches, 2);
-
-        % Image matching
-        % Filter matches using RANSAC (model maps keypt i to keypt j)
-        if nf >= nfmin
-            [inliers, model, status] = refineMatch(input, keypoints{ii}, keypoints{jj}, matches, ...
-                                                   images{ii}, images{jj});
-            ni = length(inliers);
-
-            % Verify image matches using probabilistic model
-            if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
-                if ni > 2 % accept as correct image match
-                    allMatches{i} = matches(:,inliers);
-                    numMatches(i) = ni;
-                    tforms(i) = model;
+    % Initialize
+    allMatches = cell(n);
+    numMatches = zeros(n);
+    switch input.Transformationtype
+        case 'rigid' 
+            tforms(n,n) = rigid2d(eye(3));
+        case 'similarity' 
+            tforms(n,n) = affine2d(eye(3));
+        case 'affine' 
+            tforms(n,n) = affine2d(eye(3));
+        case 'projective'
+            tforms(n,n) = projective2d(eye(3));        
+    end
+    iterations = size(allMatches);
+     
+    if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+        nfmin = 2;
+    elseif (strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid')) || ...
+            strcmp(input.Transformationtype,'similarity')
+        nfmin = 2;
+    elseif strcmp(input.Transformationtype, 'affine')
+        nfmin = 3;
+    else
+        nfmin = 4;
+    end
+    
+    
+    parfor i = 1:prod(iterations) 
+        % IND2SUB converts from a "linear" index into individual
+        % subscripts
+        [ii,jj] = ind2sub(iterations, i);
+        
+        if (ii~=jj)
+            matches = getMatches(input, allDescriptors{ii}, allDescriptors{jj});
+            nf = size(matches, 2);
+    
+            % Image matching
+            % Filter matches using RANSAC (model maps keypt i to keypt j)
+            if nf >= nfmin
+                [inliers, model, status] = refineMatch(input, keypoints{ii}, keypoints{jj}, matches, ...
+                                                       images{ii}, images{jj});
+                ni = length(inliers);
+    
+                % Verify image matches using probabilistic model
+                if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+                    if ni > 2 % accept as correct image match
+                        allMatches{i} = matches(:,inliers);
+                        numMatches(i) = ni;
+                        tforms(i) = model;
+                    end
+    
+                elseif strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid') || ...
+                       strcmp(input.Transformationtype, 'similarity')
+                    if ni > 2 % accept as correct image match
+                        allMatches{i} = matches(:,inliers);
+                        numMatches(i) = ni;
+                        tforms(i) = model;
+                    end
+                elseif strcmp(input.Transformationtype, 'affine')
+                     if ni > 3 % accept as correct image match
+                        allMatches{i} = matches(:,inliers);
+                        numMatches(i) = ni;
+                        tforms(i) = model;
+                    end
+                else
+                    if ni > 8 + 0.3 * nf %5.9 + 0.22 * nf % accept as correct image match
+                        allMatches{i} = matches(:,inliers);
+                        numMatches(i) = ni;
+                        tforms(i)     = model;
+                    end
                 end
-
-            elseif strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid') || ...
-                   strcmp(input.Transformationtype, 'similarity')
-                if ni > 2 % accept as correct image match
-                    allMatches{i} = matches(:,inliers);
-                    numMatches(i) = ni;
-                    tforms(i) = model;
-                end
-            elseif strcmp(input.Transformationtype, 'affine')
-                 if ni > 3 % accept as correct image match
-                    allMatches{i} = matches(:,inliers);
-                    numMatches(i) = ni;
-                    tforms(i) = model;
-                end
-            else
-                if ni > 8 + 0.3 * nf %5.9 + 0.22 * nf % accept as correct image match
-                    allMatches{i} = matches(:,inliers);
-                    numMatches(i) = ni;
-                    tforms(i)     = model;
-                end
+    
             end
-
         end
     end
-end
-
-% Clean up the lower triangular part
-iii = ones(size(allMatches));
-idx = find(tril(iii,-1));
-allMatches(idx) = {[]};
-numMatches = triu(numMatches,0);
-
+    
+    % Clean up the lower triangular part
+    iii = ones(size(allMatches));
+    idx = find(tril(iii,-1));
+    allMatches(idx) = {[]};
+    numMatches = triu(numMatches,0);
 end
 
 %--------------------------------------------------------------------------------------------------------

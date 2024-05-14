@@ -61,9 +61,14 @@ for myImg = 22 %1:foldersLen
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     
+    %% Load images
+    tic
+    imageFiles = loadImages(imgSetVector, myImg);
+    fprintf('Loading images: %f seconds\n', toc);
+
     %% Get feature matrices and keypoints    
     tic
-    [keypoints, allDescriptors, images, imageinfo, imageFocals, numImg] = featureMatching(input, imgSetVector, myImg);
+    [keypoints, allDescriptors, images, imageinfo, imageFocals, numImg] = featureMatching(input, imageFiles);
     fprintf('Feature matching: %f seconds\n', toc);
     
     %% Find matches        

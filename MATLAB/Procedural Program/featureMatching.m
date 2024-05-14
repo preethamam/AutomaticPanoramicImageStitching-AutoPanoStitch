@@ -1,7 +1,16 @@
-function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featureMatching(input, imgSetVector, myImg)
+function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featureMatching(input, imageFiles)
+    
+    %%***********************************************************************%
+    %*                   Automatic panorama stitching                       *%
+    %*                        Feature matching                              *%
+    %*                                                                      *%
+    %* Code author: Preetham Manjunatha                                     *%
+    %* Github link: https://github.com/preethamam                           *%
+    %* Date: 05/14/2024                                                     *%
+    %************************************************************************%
 
     % Number of images in the folder
-    n = max(cat(1,imgSetVector(myImg).Count));
+    n = length(imageFiles);
 
     % Initialize the cell arrays
     keypoints = cell(1,n);
@@ -9,13 +18,6 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
     images = cell(1,n);
     imageinfo = cell(1,n);
     imageFocals = zeros(1,n);
-    
-    % Read images
-    tic
-    imgFolder = fileparts(imgSetVector(myImg).ImageLocation(1));
-    imds = imageDatastore(imgFolder);
-    imageFiles = readall(imds);
-    fprintf('Loading images: %f seconds\n', toc);
     
     % Feature matching
     parfor i = 1:n

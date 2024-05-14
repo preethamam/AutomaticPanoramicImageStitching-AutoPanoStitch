@@ -1,13 +1,13 @@
 function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages)
 
-%%***********************************************************************%
-%*                   Automatic panorama stitching                       *%
-%*                        Gain compensation                             *%
-%*                                                                      *%
-%* Code author: Preetham Manjunatha                                     *%
-%* Github link: https://github.com/preethamam                           *%
-%* Date: 05/12/2024                                                     *%
-%************************************************************************%
+    %%***********************************************************************%
+    %*                   Automatic panorama stitching                       *%
+    %*                        Gain compensation                             *%
+    %*                                                                      *%
+    %* Code author: Preetham Manjunatha                                     *%
+    %* Github link: https://github.com/preethamam                           *%
+    %* Date: 05/12/2024                                                     *%
+    %************************************************************************%
 
     % Initialze
     n = length(warpedImages);
@@ -83,9 +83,9 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     Amat = cell2mat(Amat);    
 
     % A matrix gain values
-    gainmatR = Amat(:,1:3:size(Amat,2));
-    gainmatG = Amat(:,2:3:size(Amat,2));
-    gainmatB = Amat(:,3:3:size(Amat,2));
+    gainmatR = Amat(:,1:3:size(Amat,2)) + eps;
+    gainmatG = Amat(:,2:3:size(Amat,2)) + eps;
+    gainmatB = Amat(:,3:3:size(Amat,2)) + eps;
 
     % --------------------------------------------------------------------------------------------------------------
     % AX = b --> X = A \ b
@@ -95,6 +95,9 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     
     % Concatenate RGB gains
     gainRGB = [gR, gG, gB];
+
+    % Clip negatives
+    gainRGB(gainRGB < 0) = 1;
 
     % --------------------------------------------------------------------------------------------------------------
     % Compensate gains for images        
@@ -130,26 +133,26 @@ function [Ibarij,Ibarji,Nij] = getIbarNij(Imij, Imji)
     Nij_im  = maski & maskj;
     
     % Get tje Ibarij and Nijs
-    if sum(sum(Nij_im)) ~= 0
+    if sum(sum(Nij_im)) > 1
         Nij_im  = imfill(Nij_im, 'holes');    
         Nijidx  = repmat(Nij_im, 1, 1, size(Imij,3));
     
         % Get the overlapping region RGB values for two images
-        Ibarij = double(reshape(Imij(Nijidx),1,[],3));
-        Ibarji = double(reshape(Imji(Nijidx),1,[],3));
+        Ibarij = double(reshape(Imij(Nijidx),1,[], size(Imij,3)));
+        Ibarji = double(reshape(Imji(Nijidx),1,[], size(Imij,3)));
     
         % Nij
         Nij = sum(sum(Nij_im));
     
         % Ibar ijs
-        Ibarij = reshape(sum(Ibarij) ./ Nij, 1, 3);
-        Ibarji = reshape(sum(Ibarji) ./ Nij, 1, 3);
+        Ibarij = reshape(sum(Ibarij) ./ Nij, 1, size(Imij,3));
+        Ibarji = reshape(sum(Ibarji) ./ Nij, 1, size(Imij,3));
     else
         % Nij
         Nij = 0;
 
         % Ibar ijs
-        Ibarij = zeros(1, 3);
-        Ibarji = zeros(1, 3);
+        Ibarij = zeros(1, size(Imij,3));
+        Ibarji = zeros(1, size(Imij,3));
     end
 end

@@ -1,106 +1,105 @@
 function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms)
 
-%%***********************************************************************%
-%*                   Automatic panorama stitching                       *%
-%*                        Bundle adjustment                             *%
-%*                                                                      *%
-%* Code author: Preetham Manjunatha                                     *%
-%* Github link: https://github.com/preethamam                           *%
-%* Date: 01/27/2022                                                     *%
-%************************************************************************%
-
-% Find connected components of image matches
-numMatchesG = graph(numMatches,'upper');
-[concomps, ccBinSizes] = conncomp(numMatchesG);
-panaromaCCs = find(ccBinSizes>=1);
-ccnum = numel(panaromaCCs);
-[tree] = getMST(numMatches);
-
-finalPanoramaTforms = cell(1,ccnum);
-
-% Find panoramas 
-options = optimoptions(@lsqnonlin, 'Algorithm', 'levenberg-marquardt', ...
-    'FunctionTolerance', 1e-6, 'StepTolerance', 1e-6, 'Display','off', 'UseParallel', true);
-
-for cc = 1:ccnum
-    indices = find(concomps == cc);
-    k = length(indices);
-        
-    % Find the center image of the panorama that minimizes total area      
-    areas = zeros(k, 1);
-    for index = 1:k
-        i = indices(index);
-        finalTforms = getTforms(input, tree, i, initialTforms);
-
-        [height, width] = getPanoramaSize(images, finalTforms, concomps, cc);
-
-        areas(index) = height * width;
-    end
-    [~, index] = min(areas);
-    center = indices(index);
+    %%***********************************************************************%
+    %*                   Automatic panorama stitching                       *%
+    %*                        Bundle adjustment                             *%
+    %*                                                                      *%
+    %* Code author: Preetham Manjunatha                                     *%
+    %* Github link: https://github.com/preethamam                           *%
+    %* Date: 01/27/2022                                                     *%
+    %************************************************************************%
     
-    finalTforms = getTforms(input, tree, center, initialTforms);
-
-    if k < 2 % Skip if only one image in connected component
-        finalPanoramaTforms{cc} = finalTforms;
-        continue;
-    end
+    % Find connected components of image matches
+    numMatchesG = graph(numMatches,'upper');
+    [concomps, ccBinSizes] = conncomp(numMatchesG);
+    panaromaCCs = find(ccBinSizes>=1);
+    ccnum = numel(panaromaCCs);
+    [tree] = getMST(numMatches);
     
-    % Get an ordering of the images in the panorama
-    ordering = getOrdering(indices, tree);
-       
-    % Minimize the sum of squared projection error over all matches
-    Hs_initial = zeros(9, k);
-    Hs_LMfinal = zeros(9, k);
-    for index = 1:k
-        i = indices(index);
-        H = finalTforms(i).T';
-        Hs_initial(:,index) = reshape(H, [], 1);
+    finalPanoramaTforms = cell(1,ccnum);
+    
+    % Find panoramas 
+    options = optimoptions(@lsqnonlin, 'Algorithm', 'levenberg-marquardt', ...
+        'FunctionTolerance', 1e-6, 'StepTolerance', 1e-6, 'Display','off', 'UseParallel', true);
+    
+    for cc = 1:ccnum
+        indices = find(concomps == cc);
+        k = length(indices);
+            
+        % Find the center image of the panorama that minimizes total area      
+        areas = zeros(k, 1);
+        for index = 1:k
+            i = indices(index);
+            finalTforms = getTforms(input, tree, i, initialTforms);
+    
+            [height, width] = getPanoramaSize(images, finalTforms, concomps, cc);
+    
+            areas(index) = height * width;
+        end
+        [~, index] = min(areas);
+        center = indices(index);
+        
+        finalTforms = getTforms(input, tree, center, initialTforms);
+    
+        if k < 2 % Skip if only one image in connected component
+            finalPanoramaTforms{cc} = finalTforms;
+            continue;
+        end
+        
+        % Get an ordering of the images in the panorama
+        ordering = getOrdering(indices, tree);
+           
+        % Minimize the sum of squared projection error over all matches
+        Hs_initial = zeros(9, k);
+        Hs_LMfinal = zeros(9, k);
+        for index = 1:k
+            i = indices(index);
+            H = finalTforms(i).T';
+            Hs_initial(:,index) = reshape(H, [], 1);
+        end
+    
+        for c = 2:k
+            subordering = ordering(1:c);
+            Phi = zeros(9, c);
+            for j = 1:c
+                Phi(:,j) = Hs_initial(:,subordering(j));
+            end
+            
+            Phi = reshape(Phi(1:8,:), [], 1); % last entry of each H is 1
+            
+            fxn = @(Phi)projectionError(Phi, indices(subordering), ...
+                keypoints, allMatches, numMatches);
+            
+            [Phi,resnorm,residual,exitflag,LMoutput] = lsqnonlin(fxn, Phi, [], [], options);
+            
+            Phi = [reshape(Phi, [], c); ones(1, c)];
+            for j = 1:c
+                Hs_LMfinal(:,subordering(j)) = Phi(:,j);
+            end
+        end
+    
+        % Update transforrmations
+        refinedTforms = finalTforms;
+        for index = 1:k
+            i = indices(index);
+            H = reshape(Hs_LMfinal(:,index), [], 3);
+            if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
+                tf = H';
+                tf(1:2,3) = 0;
+                refinedTforms(i).T = single(tf);
+            elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
+                    || strcmp(input.Transformationtype,'similarity') || ...
+                       strcmp(input.Transformationtype,'affine'))
+                tf = H';
+                tf(1:2,3) = 0;
+                refinedTforms(i).T = single(tf);
+            else
+                refinedTforms(i).T = H';
+            end
+        end   
+    
+        finalPanoramaTforms{cc} = refinedTforms;
     end
-
-    for c = 2:k
-        subordering = ordering(1:c);
-        Phi = zeros(9, c);
-        for j = 1:c
-            Phi(:,j) = Hs_initial(:,subordering(j));
-        end
-        
-        Phi = reshape(Phi(1:8,:), [], 1); % last entry of each H is 1
-        
-        fxn = @(Phi)projectionError(Phi, indices(subordering), ...
-            keypoints, allMatches, numMatches);
-        
-        [Phi,resnorm,residual,exitflag,LMoutput] = lsqnonlin(fxn, Phi, [], [], options);
-        
-        Phi = [reshape(Phi, [], c); ones(1, c)];
-        for j = 1:c
-            Hs_LMfinal(:,subordering(j)) = Phi(:,j);
-        end
-    end
-
-    % Update transforrmations
-    refinedTforms = finalTforms;
-    for index = 1:k
-        i = indices(index);
-        H = reshape(Hs_LMfinal(:,index), [], 3);
-        if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
-            tf = H';
-            tf(1:2,3) = 0;
-            refinedTforms(i).T = single(tf);
-        elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
-                || strcmp(input.Transformationtype,'similarity') || ...
-                   strcmp(input.Transformationtype,'affine'))
-            tf = H';
-            tf(1:2,3) = 0;
-            refinedTforms(i).T = single(tf);
-        else
-            refinedTforms(i).T = H';
-        end
-    end   
-
-    finalPanoramaTforms{cc} = refinedTforms;
-end
-
 end
 
 %--------------------------------------------------------------------------------------------------------
