@@ -96,11 +96,7 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     gB = gainmatB \ Bvec;
     
     % Concatenate RGB gains
-    gainRGB = [gR, gG, gB];
-    
-    % Clip gain values to 0.95 to 1.1
-    gainRGB = min(gainRGB,1.1);
-    gainRGB = max(gainRGB,0.95);
+    gainRGB = [gR, gG, gB]
 
     % --------------------------------------------------------------------------------------------------------------
     % Compensate gains for images        
