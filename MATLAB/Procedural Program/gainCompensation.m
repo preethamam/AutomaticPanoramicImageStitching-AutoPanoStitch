@@ -23,7 +23,6 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     matSize = size(Amat);
 
     % Get the Ibarijs and Nijs
-    tic
     parfor i = 1:length(IuppeIdx)
 
         % Index to subscripts
@@ -70,7 +69,6 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
         end
 
     end
-    fprintf('Gain Compensation (par-for): %f\n', toc);
 
     % --------------------------------------------------------------------------------------------------------------
     % Form matrices
@@ -96,7 +94,7 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     gB = gainmatB \ Bvec;
     
     % Concatenate RGB gains
-    gainRGB = [gR, gG, gB]
+    gainRGB = [gR, gG, gB];
 
     % --------------------------------------------------------------------------------------------------------------
     % Compensate gains for images        
@@ -109,11 +107,9 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     % --------------------------------------------------------------------------------------------------------------
     % Construct gain comepensated panorama    
     gainpanorama = zeros(size(warpedImages{1}), 'uint8');
-    tic
     for i = 1:n
         gainpanorama(gainImagesMask{i}) = gainImages{i}(gainImagesMask{i});
     end
-    fprintf('Gain gain comepensated panorama (for loop): %f\n', toc);
 end
 
 %--------------------------------------------------------------------------------------------------------

@@ -57,29 +57,29 @@ foldersLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 57 %1:foldersLen %56 %22 19, 56, 84, 85, 48, 42, 12 (cylindrical-affine) % 48, 42, 12, 57
+for myImg = 57 %1:foldersLen
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     
     %% Get feature matrices and keypoints    
     tic
     [keypoints, allDescriptors, images, imageinfo, imageFocals, numImg] = featureMatching(input, imgSetVector, myImg);
-    toc
+    fprintf('Feature matching: %f seconds\n', toc);
     
     %% Find matches        
     tic
     [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, images, keypoints, allDescriptors);
-    toc               
+    fprintf('Image matching: %f seconds\n', toc);               
 
     %% Bundle adjustment
     tic
     [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms);
-    toc
+    fprintf('Final alignment (Bundle adjustment): %f seconds\n', toc);
 
     %% Render panoramas
     tic
     [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName);
-    toc
+    fprintf('Rendering panorama : %f seconds\n', toc);
 
 end
 
@@ -92,6 +92,6 @@ if(statusFclose == 0)
     disp('All files are closed.')
 end
 Runtime = toc(Start);
-disp(Runtime);
+fprintf('Total runtime : %f seconds\n', Runtime);
 currtime = datetime('now');
 display(currtime)

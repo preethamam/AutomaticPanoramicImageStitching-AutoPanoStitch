@@ -67,7 +67,7 @@ input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 % Image blending and panorama
 input.gain_derivation = 1;          % Two types of gain matrix derivations 1 or 2 (both leads to same results with some roundoffs)
 input.sigmaN = 10;                  % Standard deviations of the normalised intensity error
-input.sigmag = 0.1;                 % Standard deviations of the gain
+input.sigmag = 0.01;                % Standard deviations of the gain
 input.resizeImage = 1;              % Resize input images
 input.resizeStitchedImage = 0;      % Resize stitched image
 input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'

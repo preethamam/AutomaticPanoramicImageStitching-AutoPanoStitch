@@ -10,9 +10,18 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
     imageinfo = cell(1,n);
     imageFocals = zeros(1,n);
     
+    % Read images
+    tic
+    imgFolder = fileparts(imgSetVector(myImg).ImageLocation(1));
+    imds = imageDatastore(imgFolder);
+    imageFiles = readall(imds);
+    fprintf('Loading images: %f seconds\n', toc);
+    
+    % Feature matching
     parfor i = 1:n
-        imageFile = imgSetVector(myImg).ImageLocation{i};
-        image = imread(imageFile);
+        
+        % Sequential mages
+        image = imageFiles{i};
         
         % Get size of the image
         [imRows, imCols, imChannel] = size(image);
