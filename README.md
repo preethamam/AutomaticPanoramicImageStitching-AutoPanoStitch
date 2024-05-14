@@ -31,15 +31,16 @@ Change the hyper parameters accordingly if needed. But it is not required though
 %% Inputs 2
 %--------------------------------------------------------------------------
 % Parallel workers
-input.numCores = 4;            % Number of cores for parallel processing
+input.numCores = 32;            % Number of cores for parallel processing
+input.poolType = 'numcores';     % 'numcores' | 'Threads'
 
 %% Inputs 3
 % Warping
-input.warpType = 'cylindrical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+input.warpType = 'spherical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
 
 % Focal length
-input.fx = 1600;       % focal length of camera in pixels
-input.fy = 1600;       % focal length of camera in pixels
+input.fx = 1200;       % focal length of camera in pixels
+input.fy = 1200;       % focal length of camera in pixels
 
 % Distortion coefficients [k1, k2, k3, p1, p2]
 input.DC = [0, 0, 0, 0, 0];
@@ -64,6 +65,7 @@ input.Transformationtype = 'affine'; % 'rigid' | 'similarity' | 'affine' | 'proj
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
+input.gain_derivation = 1;          % Two types of gain matrix derivations 1 or 2 (both leads to same results with some roundoffs)
 input.sigmaN = 10;                  % Standard deviations of the normalised intensity error
 input.sigmag = 0.1;                 % Standard deviations of the gain
 input.resizeImage = 1;              % Resize input images
