@@ -35,7 +35,7 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
 
             Z = 1:n;
             Z(Z==ii) = [];
-            % [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation);
+            
             for d = Z
                 [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{d});
                 switch gain_derivation
