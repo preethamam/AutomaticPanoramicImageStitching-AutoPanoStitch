@@ -43,7 +43,6 @@ end
 Start = tic;
 warning('off','all')
 
-
 %% Get image filenames and store image names
 %--------------------------------------------------------------------------
 % Image sets
@@ -57,7 +56,7 @@ foldersLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 22 %1:foldersLen
+for myImg = 60 %1:foldersLenS
 
     fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
     

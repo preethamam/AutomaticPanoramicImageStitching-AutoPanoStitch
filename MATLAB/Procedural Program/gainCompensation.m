@@ -29,17 +29,18 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
         [ii,jj] = ind2sub(matSize, IuppeIdx(i));                 
         
         % Diagonal entries
-        if ii == jj
+        if ii == jj          
             diag_val_1 = 0;
             diag_val_2 = 0;
-           
+
             Z = 1:n;
             Z(Z==ii) = [];
+            % [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation);
             for d = Z
                 [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{d});
                 switch gain_derivation
                     case 1
-                        diag_val_1 = diag_val_1 + ( (Nij + Nij) .*  (Ibarij .* Ibarij) );
+                        diag_val_1 = diag_val_1 + ((Nij + Nij) .*  (Ibarij .* Ibarij));
                         diag_val_2 = diag_val_2 + Nij;
                     case 2
                         diag_val_1 = diag_val_1 + ((Nij * Ibarij.^2 + Nij * Ibarij.^2) / sigmaN^2);
@@ -154,5 +155,26 @@ function [Ibarij,Ibarji,Nij] = getIbarNij(Imij, Imji)
         % Ibar ijs
         Ibarij = zeros(1, size(Imij,3));
         Ibarji = zeros(1, size(Imij,3));
+    end
+end
+
+%--------------------------------------------------------------------------------------------------------
+% [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation)
+%--------------------------------------------------------------------------------------------------------
+%
+function [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation) %#ok<DEFNU>
+    diag_val_1 = 0;
+    diag_val_2 = 0;
+    parfor d = 1:length(Z)
+        dval = Z(d);
+        [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{dval});
+        switch gain_derivation
+            case 1
+                diag_val_1 = diag_val_1 + ( (Nij + Nij) .*  (Ibarij .* Ibarij) );
+                diag_val_2 = diag_val_2 + Nij;
+            case 2
+                diag_val_1 = diag_val_1 + ((Nij * Ibarij.^2 + Nij * Ibarij.^2) / sigmaN^2);
+                diag_val_2 = diag_val_2 + (Nij / sigmag^2);
+        end
     end
 end
