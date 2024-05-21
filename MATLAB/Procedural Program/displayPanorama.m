@@ -26,7 +26,11 @@ function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms,
             % Store panoramas
             allPanoramas{ii}     = panorama;
             croppedPanoramas{ii} = croppedImage;
-    
+            
+            % Full panorama
+            figure('Name','Full panorama image');
+            imshow(panorama)
+
             % Plot the bounding boxes
             figure('Name','Cropped panorama image');
             imshow(croppedImage)

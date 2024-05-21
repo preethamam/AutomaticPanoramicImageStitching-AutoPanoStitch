@@ -56,24 +56,23 @@ foldersLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 13 %1:foldersLen %4, 17, 28, 11
+for myImg = 60 %1:foldersLen %4, 17, 28, 11
     stitchStart = tic;
     fprintf('Image number: %i | Current folder: %s\n', myImg, imgSetVector(myImg).Description);
     
     %% Load images
     loadimagestic = tic;
-    [keypoints, allDescriptors, images, numImg] = loadImages2(input, imgSetVector, myImg);
+    [keypoints, allDescriptors, images, numImg] = loadImages(input, imgSetVector, myImg);
     fprintf('Loading images: %f seconds\n', toc(loadimagestic));
 
     %% Get feature matrices and keypoints    
     featureMatchtic = tic;
-    matches = featureMatching2(input, allDescriptors, numImg);
+    matches = featureMatching(input, allDescriptors, numImg);
     fprintf('Matching features : %f seconds\n', toc(featureMatchtic));
     
     %% Find matches        
     imageMatchtic = tic;
-    [allMatches, numMatches, initialTforms] = imageMatching2(input, numImg, keypoints, matches, images);
-    % [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, images, keypoints, allDescriptors);
+    [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, keypoints, matches, images);
     fprintf('Matching images: %f seconds\n', toc(imageMatchtic));               
 
     %% Bundle adjustment

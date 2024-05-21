@@ -72,20 +72,15 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
 
     end
 
-    % --------------------------------------------------------------------------------------------------------------
-    % Form matrices
-    updiagIdx = nonzeros(triu(reshape(1:numel(Amat), size(Amat)),1));
-    lowdiagIdx = nonzeros(tril(reshape(1:numel(Amat), size(Amat)),-1));
-    
-    % Populate A matrix
+    % --------------------------------------------------------------------------------------------------------------    
+    % Form A matrix and B vector
     Amat(IuppeIdx) = Amat_temp;
-    Amat(lowdiagIdx) = Amat(updiagIdx);
+    Amat_t = Amat';
+    Amat(tril(true(size(Amat)))) = Amat_t(tril(true(size(Amat))));
+
     Bvec(IuppeIdx) = Bvec_temp; 
     Bvec = diag(Bvec);
     Amat = cell2mat(Amat);    
-
-    % allMatches_t = allMatches';
-    % allMatches(tril(true(size(allMatches)))) = allMatches_t(tril(true(size(allMatches))));
 
     % A matrix gain values
     gainmatR = Amat(:,1:3:size(Amat,2)) + eps;

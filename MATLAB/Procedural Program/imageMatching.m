@@ -65,7 +65,7 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
     end       
 
     % Match images
-    for i = 1:length(IuppeIdx) 
+    parfor i = 1:length(IuppeIdx) 
 
         % IND2SUB converts from a "linear" index into individual
         % subscripts
@@ -78,13 +78,8 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
             % Image matching
             % Filter matches using RANSAC (model maps keypt i to keypt j)
             if nf >= nfmin
-                % disp('1111')
                 [inliers, model, status] = refineMatch(input, keypoints{ii}, keypoints{jj}, matches, ...
                                                        images{ii}, images{jj});
-                % disp('2222')
-                % [inliers2, model2, status2] = refineMatch(input, keypoints{jj}, keypoints{ii}, matches, ...
-                %                        images{jj}, images{ii});
-                % disp('3333')
                 ni = length(inliers);
     
                 % Verify image matches using probabilistic model

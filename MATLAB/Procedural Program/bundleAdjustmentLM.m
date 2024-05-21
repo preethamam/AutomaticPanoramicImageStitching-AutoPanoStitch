@@ -98,13 +98,15 @@ function [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(in
             i = indices(index);
             H = reshape(Hs_LMfinal(:,index), [], 3);
             if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
-                refinedTforms(i).A = single(Hs_initial); 
+                tf = H';
+                refinedTforms(i).T = single(tf);
             elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
                     || strcmp(input.Transformationtype,'similarity') || ...
                        strcmp(input.Transformationtype,'affine'))
-                refinedTforms(i).A = single(H);
+                tf = H';
+                refinedTforms(i).T = single(tf);
             else
-                refinedTforms(i).A = H;
+                refinedTforms(i).T = H';
             end
         end   
     

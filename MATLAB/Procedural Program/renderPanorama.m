@@ -23,8 +23,8 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             f = sqrt(area / maxArea);
             S_inv = inv(diag([f; f; 1]));
             for i = 1:n
-                tf = tforms(i).A * S_inv; 
-                tforms(i).A = single(tf);
+                tf = tforms(i).T * S_inv; 
+                tforms(i).T = single(tf);
             end
         end
     end

@@ -1,5 +1,4 @@
 function [keypoints, allDescriptors, images, numImgs] = loadImages(input, imgSetVector, myImg)
-% function imageFiles = loadImages(imgSetVector, myImg)
     
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%

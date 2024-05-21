@@ -38,7 +38,7 @@ input.DC = [0, 0, 0, 0, 0];
 
 % Feature matching
 input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'vl_SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
-input.Matchingthreshold = 1.0;          % 10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
+input.Matchingthreshold = 1.5;          % 10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 input.NumLayersInOctave = 3;            % Number of layers in each octave -- SIFT only
 input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the strongest features, 
@@ -47,7 +47,7 @@ input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the s
                                         % low-contrast regions of the image. -- SIFT only
 input.EdgeThreshold = 6;                % Edge threshold, specified as a non-negative scalar greater than or equal to 1. 
                                         % The threshold is used to filter out unstable edge-like features  -- SIFT only  
-input.nearestFeaturesNum = 1;           % Nearest images minimum number of features to filter distant image matches
+input.nearestFeaturesNum = 5;           % Nearest images minimum number of features to filter distant image matches
 
 % Image matching (RANSAC)
 input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
