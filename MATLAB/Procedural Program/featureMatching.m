@@ -1,5 +1,4 @@
-function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featureMatching(input, imageFiles)
-    
+function matches = featureMatching(input, allDescriptors, numImg)
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
     %*                        Feature matching                              *%
@@ -8,99 +7,43 @@ function [keypoints, allDescriptors, images, imageinfo, imageFocals, n] = featur
     %* Github link: https://github.com/preethamam                           *%
     %* Date: 05/14/2024                                                     *%
     %************************************************************************%
-
-    % Number of images in the folder
-    n = length(imageFiles);
-
-    % Initialize the cell arrays
-    keypoints = cell(1,n);
-    allDescriptors = cell(1,n);
-    images = cell(1,n);
-    imageinfo = cell(1,n);
-    imageFocals = zeros(1,n);
     
-    % Feature matching
-    parfor i = 1:n
+    % Initialize
+    matches = cell(numImg);
+    matSize = size(matches);
+    
+    % Use symmetry and run for upper triangular matrix
+    IuppeIdx = nonzeros(triu(reshape(1:numel(matches), size(matches))));
+    
+    % Initialize
+    matches_temp = cell(1,length(IuppeIdx));         
+    
+    % Match features
+    parfor i = 1:length(IuppeIdx)
+        % IND2SUB converts from a "linear" index into individual
+        % subscripts
+        [ii,jj] = ind2sub(matSize, IuppeIdx(i));
         
-        % Sequential mages
-        image = imageFiles{i};
-        
-        % Get size of the image
-        [imRows, imCols, imChannel] = size(image);
-        
-        % Image resize
-        if input.resizeImage
-            if imRows > 480 && imCols > 640
-                image = imresize(image,[480, 640]);
-            elseif imRows > 480 && imCols < 640
-                image = imresize(image,[480, imCols]);
-            elseif imRows < 480 && imCols > 640
-                image = imresize(image,[imRows, 640]);
-            end
+        if (ii~=jj)
+            matches_temp{i} = getMatches(input, allDescriptors{ii}, allDescriptors{jj});
         end
 
-        % Camera intrinsics
-        K = [input.fx, 0, imCols/2; 0, input.fy, imRows/2; 0, 0, 1];
-
-        if strcmp(input.warpType,'spherical')
-            image = image2spherical(image, K, input.DC);
-        elseif strcmp(input.warpType,'cylindrical')
-            image = image2cylindrical(image, K, input.DC);
-        end
-
-        % Replicate the third channel
-        if imChannel == 1
-            image = repmat(image, 1, 1, 3);
-        end
-        
-        % Stack images
-        images{i} = image;
-
-        % Get features and valid points
-        [descriptors, points] = getFeaturePoints(input, image);
-        
-        % Concatenate the descriptors and points
-        keypoints{i} = points';
-        allDescriptors{i} = descriptors; 
     end
-end
-   
-% Get the feature points
-function [features, validPts] = getFeaturePoints(input, ImageOriginal)    
-if size(ImageOriginal,3) > 1
-    grayImage = rgb2gray(ImageOriginal);
-else
-    grayImage = ImageOriginal;
-end
+
     
-switch input.detector
-    case 'HARRIS'
-        points = detectHarrisFeatures(grayImage);
-
-    case 'SIFT'        
-        points = detectSIFTFeatures(grayImage,'NumLayersInOctave',input.NumLayersInOctave, ...
-                                    ContrastThreshold=input.ContrastThreshold, ...
-                                    EdgeThreshold=input.EdgeThreshold);
-
-    case 'FAST'
-        points   = detectFASTFeatures(grayImage);
-
-    case 'SURF'
-        points = detectSURFFeatures(grayImage, 'NumOctaves', 8);
-
-    case 'BRISK'
-        points  = detectBRISKFeatures(grayImage);
-
-    case 'ORB'
-        points   = detectORBFeatures(grayImage);
-
-    case 'KAZE'
-        points   = detectKAZEFeatures(grayImage);
-
-    otherwise
-        error('Need a valid input!')
-end
-    [features, validPts] = extractFeatures(grayImage, points);
-    validPts = double(validPts.Location);
+    % Populate A matrix
+    matches(IuppeIdx) = matches_temp;
 end
 
+%--------------------------------------------------------------------------------------------------------
+% Auxillary functions
+%--------------------------------------------------------------------------------------------------------
+% [matches_temp] = getMatches(features1,features2)
+function matches = getMatches(input,features1,features2)
+
+    matches = matchFeatures(features1,features2, 'Method', input.Matchingmethod, ...
+                            'MatchThreshold', input.Matchingthreshold, ...
+                            'MaxRatio', input.Ratiothreshold, Unique=true);
+    
+    matches = double(matches)';
+end

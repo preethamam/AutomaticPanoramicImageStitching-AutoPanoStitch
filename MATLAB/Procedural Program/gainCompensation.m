@@ -1,4 +1,4 @@
-function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages)
+function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages, imageNeighbors)
 
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
@@ -13,8 +13,8 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     n = length(warpedImages);
     sigmaN = input.sigmaN;
     sigmag = input.sigmag;
-    gain_derivation = input.gain_derivation;
-
+    gainDerivation = input.gainDerivation;
+    parforSummation = input.parforSummation;
     Amat = cell(n);
     Bvec = zeros(n,n);
     Bvec_temp = zeros(n,1);
@@ -29,26 +29,27 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
         [ii,jj] = ind2sub(matSize, IuppeIdx(i));                 
         
         % Diagonal entries
-        if ii == jj          
-            diag_val_1 = 0;
-            diag_val_2 = 0;
-
-            Z = 1:n;
-            Z(Z==ii) = [];
-            
-            for d = Z
-                [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{d});
-                switch gain_derivation
-                    case 1
-                        diag_val_1 = diag_val_1 + ((Nij + Nij) .*  (Ibarij .* Ibarij));
-                        diag_val_2 = diag_val_2 + Nij;
-                    case 2
-                        diag_val_1 = diag_val_1 + ((Nij * Ibarij.^2 + Nij * Ibarij.^2) / sigmaN^2);
-                        diag_val_2 = diag_val_2 + (Nij / sigmag^2);
-                end
+        if ii == jj                      
+            switch parforSummation
+                case true
+                    [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, imageNeighbors{ii}, gainDerivation);
+                case false
+                    diag_val_1 = 0;
+                    diag_val_2 = 0;
+                    for d = imageNeighbors{ii}
+                        [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{d});
+                        switch gainDerivation
+                            case 1
+                                diag_val_1 = diag_val_1 + ((Nij + Nij) .*  (Ibarij .* Ibarij));
+                                diag_val_2 = diag_val_2 + Nij;
+                            case 2
+                                diag_val_1 = diag_val_1 + ((Nij * Ibarij.^2 + Nij * Ibarij.^2) / sigmaN^2);
+                                diag_val_2 = diag_val_2 + (Nij / sigmag^2);
+                        end
+                    end
             end
 
-            switch gain_derivation
+            switch gainDerivation
                 case 1
                     Amat_temp{i} = diag_val_1 + (sigmaN^2/sigmag^2) * diag_val_2;
                     Bvec_temp(i) = (sigmaN^2/sigmag^2) * diag_val_2;
@@ -61,7 +62,7 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
         % Off-diagonal entries
         if ii ~= jj
             [Ibarij,Ibarji,Nij] = getIbarNij(warpedImages{ii}, warpedImages{jj});
-            switch gain_derivation
+            switch gainDerivation
                 case 1
                     Amat_temp{i} = - (Nij+Nij) .* (Ibarij .* Ibarji);
                 case 2
@@ -82,6 +83,9 @@ function [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedIma
     Bvec(IuppeIdx) = Bvec_temp; 
     Bvec = diag(Bvec);
     Amat = cell2mat(Amat);    
+
+    % allMatches_t = allMatches';
+    % allMatches(tril(true(size(allMatches)))) = allMatches_t(tril(true(size(allMatches))));
 
     % A matrix gain values
     gainmatR = Amat(:,1:3:size(Amat,2)) + eps;
@@ -159,16 +163,16 @@ function [Ibarij,Ibarji,Nij] = getIbarNij(Imij, Imji)
 end
 
 %--------------------------------------------------------------------------------------------------------
-% [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation)
+% [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gainDerivation)
 %--------------------------------------------------------------------------------------------------------
 %
-function [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gain_derivation) %#ok<DEFNU>
+function [diag_val_1, diag_val_2] = gainDiagonalSum(warpedImages, ii, Z, gainDerivation) %#ok<DEFNU>
     diag_val_1 = 0;
     diag_val_2 = 0;
     parfor d = 1:length(Z)
         dval = Z(d);
         [Ibarij, Ibarji, Nij] = getIbarNij(warpedImages{ii}, warpedImages{dval});
-        switch gain_derivation
+        switch gainDerivation
             case 1
                 diag_val_1 = diag_val_1 + ( (Nij + Nij) .*  (Ibarij .* Ibarij) );
                 diag_val_2 = diag_val_2 + Nij;

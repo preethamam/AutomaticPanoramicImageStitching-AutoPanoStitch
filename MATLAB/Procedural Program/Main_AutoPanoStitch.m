@@ -56,35 +56,38 @@ foldersLen = length(imgSetVector);
 % Stitches panoramas
 %--------------------------------------------------------------------------
 
-for myImg = 60 %1:foldersLenS
-
-    fprintf('Current folder: %s\n', imgSetVector(myImg).Description);
+for myImg = 13 %1:foldersLen %4, 17, 28, 11
+    stitchStart = tic;
+    fprintf('Image number: %i | Current folder: %s\n', myImg, imgSetVector(myImg).Description);
     
     %% Load images
-    tic
-    imageFiles = loadImages(imgSetVector, myImg);
-    fprintf('Loading images: %f seconds\n', toc);
+    loadimagestic = tic;
+    [keypoints, allDescriptors, images, numImg] = loadImages2(input, imgSetVector, myImg);
+    fprintf('Loading images: %f seconds\n', toc(loadimagestic));
 
     %% Get feature matrices and keypoints    
-    tic
-    [keypoints, allDescriptors, images, imageinfo, imageFocals, numImg] = featureMatching(input, imageFiles);
-    fprintf('Feature matching: %f seconds\n', toc);
+    featureMatchtic = tic;
+    matches = featureMatching2(input, allDescriptors, numImg);
+    fprintf('Matching features : %f seconds\n', toc(featureMatchtic));
     
     %% Find matches        
-    tic
-    [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, images, keypoints, allDescriptors);
-    fprintf('Image matching: %f seconds\n', toc);               
+    imageMatchtic = tic;
+    [allMatches, numMatches, initialTforms] = imageMatching2(input, numImg, keypoints, matches, images);
+    % [allMatches, numMatches, initialTforms] = imageMatching(input, numImg, images, keypoints, allDescriptors);
+    fprintf('Matching images: %f seconds\n', toc(imageMatchtic));               
 
     %% Bundle adjustment
-    tic
-    [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms);
-    fprintf('Final alignment (Bundle adjustment): %f seconds\n', toc);
+    bALMtic = tic;
+    [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms);
+    fprintf('Final alignment (Bundle adjustment): %f seconds\n', toc(bALMtic));
 
     %% Render panoramas
-    tic
-    [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, input, images, imageFocals, concomps, myImg, datasetName);
-    fprintf('Rendering panorama : %f seconds\n', toc);
-
+    close all;
+    rendertic = tic;
+    [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, imageNeighbors, input, images, concomps, myImg, datasetName);
+    fprintf('Rendering panorama : %f seconds\n', toc(rendertic));
+    fprintf('Total runtime (stitching) : %f seconds\n', toc(stitchStart));
+    fprintf('--------------------------------\n\n', toc); %#ok<CTPCT>        
 end
 
 %% End parameters

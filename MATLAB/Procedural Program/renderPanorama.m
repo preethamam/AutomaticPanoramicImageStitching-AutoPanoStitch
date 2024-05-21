@@ -1,6 +1,6 @@
 function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             gainRGB, warpedImages, xCorrect, yCorrect] = ...
-            renderPanorama(input, images, focalLengths, tforms, ccs, cc)
+            renderPanorama(input, images, imageNeighbors, tforms, ccs, cc)
     
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
@@ -23,11 +23,8 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             f = sqrt(area / maxArea);
             S_inv = inv(diag([f; f; 1]));
             for i = 1:n
-                tf = tforms(i).T * S_inv; 
-                tf(1:2,3) = 0;
-                tf(3,3) = 1;
-    
-                tforms(i).T = single(tf);
+                tf = tforms(i).A * S_inv; 
+                tforms(i).A = single(tf);
             end
         end
     end
@@ -96,7 +93,7 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             yCorrect(:,i) = y - panoramaView.YWorldLimits(1);
             
             warpedImage = imwarp(image, tforms(i), 'OutputView', panoramaView, 'FillValues', 0);
-            
+
             switch input.blending
                 case 'none'
                     warpedImages{index} = warpedImage;
@@ -111,6 +108,11 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
           
         end
         
+        % Display the panorama images with their numbers
+        if input.showPanoramaImgsNums
+            imageNumbersShow(warpedImages)
+        end
+
         switch input.blending
             case 'none'
                 % Panorama creation
@@ -130,7 +132,7 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             case 'linear'
                 tic
                 % Gain compensation
-                [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages);
+                [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages, imageNeighbors);
                 fprintf('Gain compensation: %f seconds\n', toc);
     
                 % Apply linear blending
@@ -149,7 +151,7 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
             case 'multiband'
                 tic
                 % Gain compensation
-                [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages);
+                [gainpanorama, gainImages, gainRGB] = gainCompensation(input, warpedImages, imageNeighbors);
                 fprintf('Gain compensation: %f seconds\n', toc);
         
                 % Apply multi-band blending
@@ -231,4 +233,29 @@ function [height, width] = getPanoramaSize(images, tforms, ccs, cc)
     % Width and height of panorama
     width = round(xMax - xMin);
     height = round(yMax - yMin);
+end
+
+% imageNumbersShow(warpedImages)
+%
+% Displays the panorama images with their numbers
+% for the debugging purpose of stitched images neighbors from the matches graphs.
+%
+function imageNumbersShow(warpedImages)
+    % Image numbering for debugging
+    warpedImagesMask2D = cellfun(@(x) imfill(imbinarize(rgb2gray(255 * x)), 'holes'), ...
+                    warpedImages, 'UniformOutput',false);
+    warpedImagesMask = cellfun(@(x) repmat(imfill(imbinarize(rgb2gray(255 * x)), 'holes'), 1, 1, size(warpedImages{1},3)), ...
+                                        warpedImages, 'UniformOutput',false);
+    warpedImages_centroid = cellfun(@(x) regionprops(x, 'Centroid'), warpedImagesMask2D, 'UniformOutput',false);
+    warpedImages_centroid = cell2mat(cellfun(@(x) cat(1,x.Centroid), warpedImages_centroid, 'UniformOutput',false));
+    imgnum_panorama = zeros(size(warpedImages{1}), 'uint8');
+    for i = 1:length(warpedImages)
+        imgnum_panorama(warpedImagesMask{i}) = warpedImages{i}(warpedImagesMask{i});
+    end
+
+    figure('Name','Image numbers');
+    RGB = insertText(imgnum_panorama,warpedImages_centroid,1:length(warpedImages), ...
+                        FontSize=30,BoxColor='red', TextColor="white");
+    imshow(RGB)
+
 end

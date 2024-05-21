@@ -1,5 +1,5 @@
-function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, input, ...
-                                                images, imageFocals, concomps, myImg, datasetName)
+function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms, imageNeighbors, input, ...
+                                                images, concomps, myImg, datasetName)
 
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
@@ -18,7 +18,7 @@ function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms,
             % Create and display panorama
             [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
                 gainRGB, warpedImages, xCorrect, yCorrect] = ...
-                renderPanorama(input, images, imageFocals, finalPanoramaTforms{ii}, concomps, ii);
+                renderPanorama(input, images, imageNeighbors{ii}, finalPanoramaTforms{ii}, concomps, ii);
             
             % Final panorama cropper
             croppedImage = panoramaCropper(input, panorama);   
@@ -80,36 +80,36 @@ function [allPanoramas, croppedPanoramas] = displayPanorama(finalPanoramaTforms,
             % ax = gcf;
             % exportgraphics(ax,'pano_full.jpg')
     
-            % if ismac
-            %     % Code to run on Mac platform
-            %     imwrite(panorama, fullfile('../../../../../../../Team Work/Team CrackSTITCH/Results/MATLAB Stitch/', [input.warpType '_' input.Transformationtype '_' ...
-            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
-            % elseif isunix
-            %     % Code to run on Linux platform
-            %     imwrite(panorama, fullfile(['../../../../../../../Team Work/Team CrackSTITCH/Results/MATLAB Stitch/', input.warpType '_' input.Transformationtype '_' ...
-            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
-            % elseif ispc
-            %     % Code to run on Windows platform
-            %     imwrite(panorama, fullfile(['..\..\..\..\..\..\..\Team Work\Team CrackSTITCH\Results\MATLAB Stitch\', input.warpType '_' input.Transformationtype '_' ...
-            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
-            % else
-            %     disp('Platform not supported')
-            % end
-    
             if ismac
                 % Code to run on Mac platform
-                imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
-                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+                imwrite(panorama, fullfile('../../../../../../../Team Work/Team CrackSTITCH/Results/MATLAB Stitch/', [input.warpType '_' input.Transformationtype '_' ...
+                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
             elseif isunix
                 % Code to run on Linux platform
-                imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
-                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+                imwrite(panorama, fullfile(['../../../../../../../Team Work/Team CrackSTITCH/Results/MATLAB Stitch/', input.warpType '_' input.Transformationtype '_' ...
+                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
             elseif ispc
                 % Code to run on Windows platform
-                imwrite(panorama, [ input.warpType '_' input.Transformationtype '_' ...
-                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+                imwrite(panorama, fullfile(['..\..\..\..\..\..\..\Team Work\Team CrackSTITCH\Results\MATLAB Stitch\', input.warpType '_' input.Transformationtype '_' ...
+                num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png']))
             else
                 disp('Platform not supported')
             end
+    
+            % if ismac
+            %     % Code to run on Mac platform
+            %     imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
+            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+            % elseif isunix
+            %     % Code to run on Linux platform
+            %     imwrite(panorama, [input.warpType '_' input.Transformationtype '_' ...
+            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+            % elseif ispc
+            %     % Code to run on Windows platform
+            %     imwrite(panorama, [ input.warpType '_' input.Transformationtype '_' ...
+            %     num2str(myImg) '_' num2str(ii) '_' char(datasetName{myImg}) '.png'])
+            % else
+            %     disp('Platform not supported')
+            % end
     end
 end

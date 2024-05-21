@@ -1,4 +1,4 @@
-function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms)
+function [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(input, images, keypoints, allMatches, numMatches, initialTforms)
 
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
@@ -14,7 +14,7 @@ function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, key
     [concomps, ccBinSizes] = conncomp(numMatchesG);
     panaromaCCs = find(ccBinSizes>=1);
     ccnum = numel(panaromaCCs);
-    [tree] = getMST(numMatches);
+    tree = getMST(numMatches);
     
     finalPanoramaTforms = cell(1,ccnum);
     
@@ -22,6 +22,22 @@ function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, key
     options = optimoptions(@lsqnonlin, 'Algorithm', 'levenberg-marquardt', ...
         'FunctionTolerance', 1e-6, 'StepTolerance', 1e-6, 'Display','off', 'UseParallel', true);
     
+    % Find images neighbors    
+    nearestFeaturesNum = input.nearestFeaturesNum;
+    unqCCs = unique(concomps,'stable');
+    imageNeighbors = cell(numel(unqCCs),1);
+    for j = 1:length(unqCCs)
+        ccIdx = find(concomps == unqCCs(j));
+        numMatchesCCs = numMatches(ccIdx, ccIdx);
+        numMatchesGCCs = graph(numMatchesCCs,'upper');
+        parfor i = 1:size(numMatchesCCs,1)
+            nn = neighbors(numMatchesGCCs,i)';
+            nn_dist = distances(numMatchesGCCs,i, nn);
+            imageNeighborsTemp{i} = nn(nn_dist>nearestFeaturesNum);
+        end
+        imageNeighbors{j} = imageNeighborsTemp;
+    end
+
     for cc = 1:ccnum
         indices = find(concomps == cc);
         k = length(indices);
@@ -31,9 +47,7 @@ function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, key
         for index = 1:k
             i = indices(index);
             finalTforms = getTforms(input, tree, i, initialTforms);
-    
             [height, width] = getPanoramaSize(images, finalTforms, concomps, cc);
-    
             areas(index) = height * width;
         end
         [~, index] = min(areas);
@@ -84,17 +98,13 @@ function [finalPanoramaTforms, concomps] = bundleAdjustmentLM(input, images, key
             i = indices(index);
             H = reshape(Hs_LMfinal(:,index), [], 3);
             if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
-                tf = H';
-                tf(1:2,3) = 0;
-                refinedTforms(i).T = single(tf);
+                refinedTforms(i).A = single(Hs_initial); 
             elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
                     || strcmp(input.Transformationtype,'similarity') || ...
                        strcmp(input.Transformationtype,'affine'))
-                tf = H';
-                tf(1:2,3) = 0;
-                refinedTforms(i).T = single(tf);
+                refinedTforms(i).A = single(H);
             else
-                refinedTforms(i).T = H';
+                refinedTforms(i).A = H;
             end
         end   
     
@@ -262,13 +272,17 @@ function [tforms] = getTforms(input, G, i, Tforms)
 
     switch input.Transformationtype
         case 'rigid' 
-            tforms(n) = rigid2d(eye(3));
+            tforms(n) = rigidtform2d(eye(3));
         case 'similarity' 
-            tforms(n) = affine2d(eye(3));
+            tforms(n) = simtform2d(eye(3));
         case 'affine' 
-            tforms(n) = affine2d(eye(3));
+            tforms(n) = affinetform2d(eye(3));
         case 'projective'
-            tforms(n) = projective2d(eye(3));        
+            tforms(n) = projtform2d(eye(3));
+        case 'translation'
+            tforms(n) = transltform2d(eye(3));
+        otherwise
+            error('Requires a transformation type!')
     end
     
     [tforms] = updateTforms(G, i, visited, tforms, Tforms);
