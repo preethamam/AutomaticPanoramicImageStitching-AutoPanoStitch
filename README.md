@@ -31,7 +31,7 @@ Change the hyper parameters accordingly if needed. But it is not required though
 %% Inputs 2
 %--------------------------------------------------------------------------
 % Parallel workers
-input.numCores = str2double(getenv('NUMBER_OF_PROCESSORS'));             % Number of cores for parallel processing
+input.numCores = str2double(getenv('NUMBER_OF_PROCESSORS'));    % Number of cores for parallel processing
 input.poolType = 'numcores';     % 'numcores' | 'Threads'
 
 %% Inputs 3
@@ -74,6 +74,7 @@ input.sigmaN = 10;                  % Standard deviations of the normalised inte
 input.sigmag = 0.01;                % Standard deviations of the gain
 input.resizeImage = 1;              % Resize input images
 input.resizeStitchedImage = 1;      % Resize stitched image
+input.maxPanoramaArea = 3e6;        % Maximum panorama area
 input.blending = 'multiband';       % 'multiband' | 'linear' | 'none'
 input.bands = 6;                    % bands
 input.MBBsigma = 5;                 % Multi-band Gaussian sigma
