@@ -22,7 +22,7 @@ folderName      = '';
 %% Inputs 2
 %--------------------------------------------------------------------------
 % Parallel workers
-input.numCores = 32;             % Number of cores for parallel processing
+input.numCores = str2double(getenv('NUMBER_OF_PROCESSORS'));             % Number of cores for parallel processing
 input.poolType = 'numcores';     % 'numcores' | 'Threads'
 
 %% Inputs 3
@@ -38,22 +38,25 @@ input.DC = [0, 0, 0, 0, 0];
 
 % Feature matching
 input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'vl_SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
-input.Matchingthreshold = 1.5;          % 10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on binary and non-binary features
+input.Matchingthreshold = 3.5;          % 10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on 
+                                        % binary and non-binary features
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
-input.NumLayersInOctave = 3;            % Number of layers in each octave -- SIFT only
+input.Sigma = 1.6;                      % Sigma of the Gaussian (1.4142135623)
+input.NumLayersInOctave = 4;            % Number of layers in each octave -- SIFT only
 input.ContrastThreshold = 0.00133;      % Contrast threshold for selecting the strongest features, 
                                         % specified as a non-negative scalar in the range [0,1]. 
                                         % The threshold is used to filter out weak features in 
                                         % low-contrast regions of the image. -- SIFT only
 input.EdgeThreshold = 6;                % Edge threshold, specified as a non-negative scalar greater than or equal to 1. 
                                         % The threshold is used to filter out unstable edge-like features  -- SIFT only  
-input.nearestFeaturesNum = 5;           % Nearest images minimum number of features to filter distant image matches
+input.nearestFeaturesNum = 5;           % Nearest images minimum number of features to filter
+                                        % distant image matches (filter gain overlap images to reduce complexity)
 
 % Image matching (RANSAC)
 input.Matchingmethod = 'Approximate';   %'Exhaustive' (default) | 'Approximate'
 input.Inliersconfidence = 99.9;         % Inlier confidence [0,100]
 input.maxIter = 2000;                   % RANSAC maximum iterations
-input.Transformationtype = 'affine';    % 'rigid' | 'similarity' | 'affine' | 'projective' | 'translation'
+input.Transformationtype = 'affine';     % 'rigid' | 'similarity' | 'affine' | 'projective' | 'translation'
 input.MaxDistance = 1.50;               % Maximum distance (pixels) 1.5
 
 % Image blending and panorama
@@ -74,4 +77,5 @@ input.canvas_color = 'black';       % Panorama canvas color 'black' | 'white'
 input.showCropBoundingBox = 1;      % Display cropping bounding box 0 | 1
 input.blackRange = 0;               % Minimum dark pixel value to crop panaroma
 input.whiteRange = 250;             % Minimum bright pixel value to crop panaroma
-input.showPlot  = 0;                % Display keypoints plot (parfor suppresses this flag, so no use)
+input.showKeypointsPlot  = 0;       % Display keypoints plot (parfor suppresses this flag, so no use)
+input.displayPanoramas = 0;         % Display panoramas in figure

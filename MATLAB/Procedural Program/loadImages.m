@@ -1,4 +1,5 @@
 function [keypoints, allDescriptors, images, numImgs] = loadImages(input, imgSetVector, myImg)
+% function imageFiles = loadImages(imgSetVector, myImg)
     
     %%***********************************************************************%
     %*                   Automatic panorama stitching                       *%
@@ -83,7 +84,8 @@ function [features, validPts] = getFeaturePoints(input, ImageOriginal)
         case 'SIFT'        
             points = detectSIFTFeatures(grayImage,'NumLayersInOctave',input.NumLayersInOctave, ...
                                         ContrastThreshold=input.ContrastThreshold, ...
-                                        EdgeThreshold=input.EdgeThreshold);
+                                        EdgeThreshold=input.EdgeThreshold, ...
+                                        Sigma=input.Sigma);
         case 'vl_SIFT'
             [locations, features]  = vl_sift(single(grayImage), 'Octaves', 8);
             features = features';
@@ -117,5 +119,4 @@ function [features, validPts] = getFeaturePoints(input, ImageOriginal)
         [features, validPts] = extractFeatures(grayImage, points);
         validPts = double(validPts.Location);
     end
-
 end

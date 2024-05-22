@@ -40,10 +40,8 @@ end
 %--------------------------------------------------------------------------------------------------------
 % [matches_temp] = getMatches(features1,features2)
 function matches = getMatches(input,features1,features2)
-
     matches = matchFeatures(features1,features2, 'Method', input.Matchingmethod, ...
                             'MatchThreshold', input.Matchingthreshold, ...
-                            'MaxRatio', input.Ratiothreshold, Unique=true);
-    
+                            'MaxRatio', input.Ratiothreshold, Unique=true);    
     matches = double(matches)';
 end

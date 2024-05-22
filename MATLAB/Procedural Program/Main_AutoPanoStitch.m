@@ -21,6 +21,7 @@
 clear; close all; clc;
 clcwaitbarz = findall(0,'type','figure','tag','TMWWaitbar');
 delete(clcwaitbarz);
+warning('off','all');
 
 %% Get inputs
 %--------------------------------------------------------------------------
@@ -55,15 +56,14 @@ foldersLen = length(imgSetVector);
 %--------------------------------------------------------------------------
 % Stitches panoramas
 %--------------------------------------------------------------------------
-
-for myImg = 60 %1:foldersLen %4, 17, 28, 11
+for myImg = 16%1:foldersLen
     stitchStart = tic;
     fprintf('Image number: %i | Current folder: %s\n', myImg, imgSetVector(myImg).Description);
     
     %% Load images
     loadimagestic = tic;
     [keypoints, allDescriptors, images, numImg] = loadImages(input, imgSetVector, myImg);
-    fprintf('Loading images: %f seconds\n', toc(loadimagestic));
+    fprintf('Loading images (+ features): %f seconds\n', toc(loadimagestic));
 
     %% Get feature matrices and keypoints    
     featureMatchtic = tic;

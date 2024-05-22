@@ -72,7 +72,11 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
         [ii,jj] = ind2sub(matSize, IuppeIdx(i));
         
         if (ii~=jj)
+
+            % Keypoints matches
             matches = matchesAll{ii,jj};
+
+            % Number of features
             nf = size(matches, 2);
     
             % Image matching
@@ -80,6 +84,8 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
             if nf >= nfmin
                 [inliers, model, status] = refineMatch(input, keypoints{ii}, keypoints{jj}, matches, ...
                                                        images{ii}, images{jj});
+
+                % Number of inliers
                 ni = length(inliers);
     
                 % Verify image matches using probabilistic model
@@ -93,7 +99,7 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
     
                 elseif strcmp(input.warpType,'planar') && strcmp(input.Transformationtype,'rigid') || ...
                        strcmp(input.Transformationtype, 'similarity')
-                    if ni > 5 + 0.15 * nf %2 % accept as correct image match
+                    if ni > 5 + 0.025 * nf %2 % accept as correct image match
                         allMatches_temp{i} = matches(:,inliers);
                         numMatches_temp(i) = ni;
                         tforms_temp(i) = model;
@@ -114,7 +120,6 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
                         tforms_temp2(i) = model.invert;
                     end
                 end
-    
             end
         end
     end
@@ -125,7 +130,7 @@ function [allMatches, numMatches, tforms] = imageMatching(input, n, keypoints, m
     % Populate number of matches symmetric matrix
     numMatches(IuppeIdx) = numMatches_temp;
 
-    % Populate number of matches symmetric matrix
+    % Populate transformation matrix
     tforms(IuppeIdx) = tforms_temp;
     tforms2(IuppeIdx) = tforms_temp2;
     tforms2 = tforms2';
@@ -140,32 +145,32 @@ end
 % Returns the set of inliers and corresponding homography that maps matched
 % points from P1 to P2.
 function [inliers, model, status] = refineMatch(input, P1, P2, matches, image1, image2)
-
-matchedPts_1 = P1(:,matches(1,:))';
-matchedPts_2 = P2(:,matches(2,:))';
-
-
-[model, inliers, status] = estgeotform2d(matchedPts_2, matchedPts_1, input.Transformationtype, ...
-                        'Confidence', input.Inliersconfidence, 'MaxNumTrials', input.maxIter, ...
-                        'MaxDistance', input.MaxDistance);
-
-inliers = find(inliers);
-
-% Plot of the feature matches
-if(input.showPlot == 1)
-    figure(1);
-    subplot(1,3,1)
-    montage({image1, image2});
-    title('Original Images')
+    % Matched points
+    matchedPts_1 = P1(:,matches(1,:))';
+    matchedPts_2 = P2(:,matches(2,:))';
     
-    subplot(1,3,2)
-    showMatchedFeatures(image1, image2, matchedPts_1, matchedPts_2, 'montage')
-    title('Putative Matches')
+    % Estimate the transformation matrix
+    [model, inliers, status] = estgeotform2d(matchedPts_2, matchedPts_1, input.Transformationtype, ...
+                            'Confidence', input.Inliersconfidence, 'MaxNumTrials', input.maxIter, ...
+                            'MaxDistance', input.MaxDistance);
     
-    subplot(1,3,3)
-    showMatchedFeatures(image1, image2, matchedPts_1(inliers,:), matchedPts_2(inliers,:), 'montage')
-    title('Inlier Matches')
-end
-
+    % Find inliers
+    inliers = find(inliers);
+    
+    % Plot of the feature matches
+    if(input.showKeypointsPlot == 1)
+        figure(1);
+        subplot(1,3,1)
+        montage({image1, image2});
+        title('Original Images')
+        
+        subplot(1,3,2)
+        showMatchedFeatures(image1, image2, matchedPts_1, matchedPts_2, 'montage')
+        title('Putative Matches')
+        
+        subplot(1,3,3)
+        showMatchedFeatures(image1, image2, matchedPts_1(inliers,:), matchedPts_2(inliers,:), 'montage')
+        title('Inlier Matches')
+    end
 end
 

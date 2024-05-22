@@ -13,7 +13,7 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
 
     % Total length of images
     n = length(tforms);
-    
+
     % If the total area is too large, rescale the images to be smaller
     if input.resizeStitchedImage
         [height, width] = getPanoramaSize(images, tforms, ccs, cc);
@@ -21,9 +21,16 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
         maxArea = 3e6;
         if area > maxArea
             f = sqrt(area / maxArea);
-            S_inv = inv(diag([f; f; 1]));
-            for i = 1:n
-                tf = tforms(i).T * S_inv; 
+            for i = 1:n                
+                tf = tforms(i).T / diag([f; f; 1]);
+                if strcmp(input.Transformationtype, 'affine')                    
+                    tf(1:2,3) = 0;
+                    tf(3,3) = 1;
+                end
+                if strcmp(input.Transformationtype,'rigid') || ...
+                   strcmp(input.Transformationtype,'similarity')
+                   tf(1:2,1:2) =  tforms(i).R;
+                end
                 tforms(i).T = single(tf);
             end
         end

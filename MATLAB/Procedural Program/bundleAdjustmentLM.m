@@ -14,7 +14,7 @@ function [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(in
     [concomps, ccBinSizes] = conncomp(numMatchesG);
     panaromaCCs = find(ccBinSizes>=1);
     ccnum = numel(panaromaCCs);
-    tree = getMST(numMatches);
+    [tree] = getMST(numMatches);
     
     finalPanoramaTforms = cell(1,ccnum);
     
@@ -47,7 +47,9 @@ function [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(in
         for index = 1:k
             i = indices(index);
             finalTforms = getTforms(input, tree, i, initialTforms);
+    
             [height, width] = getPanoramaSize(images, finalTforms, concomps, cc);
+    
             areas(index) = height * width;
         end
         [~, index] = min(areas);
@@ -99,11 +101,13 @@ function [finalPanoramaTforms, concomps, imageNeighbors] = bundleAdjustmentLM(in
             H = reshape(Hs_LMfinal(:,index), [], 3);
             if strcmp(input.warpType,'spherical') || strcmp(input.warpType,'cylindrical')
                 tf = H';
+                tf(1:2,3) = 0;
                 refinedTforms(i).T = single(tf);
             elseif strcmp(input.warpType,'planar') && (strcmp(input.Transformationtype,'rigid') ...
                     || strcmp(input.Transformationtype,'similarity') || ...
                        strcmp(input.Transformationtype,'affine'))
                 tf = H';
+                tf(1:2,3) = 0;
                 refinedTforms(i).T = single(tf);
             else
                 refinedTforms(i).T = H';
