@@ -13,35 +13,16 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
 
     % Total length of images
     n = length(tforms);
-
-    % If the total area is too large, rescale the images to be smaller
-    if input.resizeStitchedImage
-        [height, width] = getPanoramaSize(images, tforms, ccs, cc);
-        area = height * width;
-        maxArea = 3e6;
-        if area > maxArea
-            f = sqrt(area / maxArea);
-            for i = 1:n                
-                tf = tforms(i).T / diag([f; f; 1]);
-                if strcmp(input.Transformationtype, 'affine')                    
-                    tf(1:2,3) = 0;
-                    tf(3,3) = 1;
-                end
-                if strcmp(input.Transformationtype,'rigid') || ...
-                   strcmp(input.Transformationtype,'similarity')
-                   tf(1:2,1:2) =  tforms(i).R;
-                end
-                tforms(i).T = single(tf);
-            end
-        end
-    end
     
-    xlim = zeros(n,2);
-    ylim = zeros(n,2);
-    hMax = 0;
-    wMax = 0;
+    % Resize stitched image
+    if input.resizeStitchedImage
+        tforms = resizePanorama(input, images, tforms, n, ccs, cc);        
+    end
+
+    % Find connected components indices
     indices = find(ccs == cc);
     
+    % Render the panorma image
     if numel(indices) == 1
         panorama = images{indices};
         gainpanorama = images{indices};
@@ -55,6 +36,12 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
         warning('Single image detected. No panorama created!')
         
     else
+        % Set the panorama view limits
+        xlim = zeros(n,2);
+        ylim = zeros(n,2);
+        hMax = 0;
+        wMax = 0;
+
         for index = 1:length(indices)
             i = indices(index);
             h = size(images{i}, 1);
@@ -183,6 +170,36 @@ end
 %--------------------------------------------------------------------------------------------------------
 % Auxillary functions
 %--------------------------------------------------------------------------------------------------------
+% tforms = resizePanorama(input, images, tforms, n, ccs, cc)
+%
+% Given the panorama transformation matrices, this function resizes the
+% transformation matrices according to the maxArea size. Returns the
+% scaled transformation matrices. When the transformation type is 'rigid'
+% or 'similarity', a naive scaling leads to a invalid transformation matrix
+% due to scaling of the rotation matrix. To counter this problem, rotation
+% matrix is replaced by a original unscaled rotation matrix.
+function tforms = resizePanorama(input, images, tforms, n, ccs, cc)    
+    % If the total area is too large, rescale the images to be smaller    
+    [height, width] = getPanoramaSize(images, tforms, ccs, cc);
+    area = height * width;
+    maxArea = input.maxPanoramaArea;
+    if area > maxArea
+        f = sqrt(area / maxArea);
+        for i = 1:n                
+            tf = tforms(i).T / diag([f; f; 1]);
+            if strcmp(input.Transformationtype, 'affine')                    
+                tf(1:2,3) = 0;
+                tf(3,3) = 1;
+            end
+            if strcmp(input.Transformationtype,'rigid') || ...
+               strcmp(input.Transformationtype,'similarity')
+               tf(1:2,1:2) =  tforms(i).R;
+            end
+            tforms(i).T = single(tf);
+        end
+    end
+end
+
 % [weight] = getWeight(size)
 %
 % Given the size of an RGB image, returns a weight matrix with the same
