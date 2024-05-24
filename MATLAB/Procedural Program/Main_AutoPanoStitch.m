@@ -56,7 +56,7 @@ foldersLen = length(imgSetVector);
 %--------------------------------------------------------------------------
 % Stitches panoramas
 %--------------------------------------------------------------------------
-for myImg = 16 %1:foldersLen
+for myImg = 62 %1:foldersLen
     stitchStart = tic;
     fprintf('Image number: %i | Current folder: %s\n', myImg, imgSetVector(myImg).Description);
     

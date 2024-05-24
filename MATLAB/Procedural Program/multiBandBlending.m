@@ -38,9 +38,9 @@ function image = multiBandBlending(input, warpedImages, warpedWeights)
     [~, index] = max(wsum2,[],3,'omitnan');
     maxInd = index .* imcomplement(zeroInd);
     
-    for i = 1:length(warpedWeights)    
+    parfor i = 1:length(warpedWeights)    
         Wmaxind = maxInd == i;
-        WmaxTemp    = zeros(size(warpedWeights{i}));
+        WmaxTemp = zeros(size(warpedWeights{i}));
     
         % Reshape the mask
         WmaxMask = repmat(Wmaxind,1,1,3);

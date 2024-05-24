@@ -39,7 +39,7 @@ input.DC = [0, 0, 0, 0, 0];
 % Feature matching
 input.detector = 'SIFT';                % 'HARRIS' | 'SIFT' | 'vl_SIFT' | 'FAST' | 'SURF' | 'BRISK' | 'ORB' | 'KAZE'
 input.Matchingthreshold = 3.5;          % 10.0 or 1.0 (default) | percent value in the range (0, 100] | depends on 
-                                        % binary and non-binary features
+                                        % binary and non-binary features (3.5)
 input.Ratiothreshold = 0.6;             % ratio in the range (0,1]
 input.Sigma = 1.6;                      % Sigma of the Gaussian (1.4142135623)
 input.NumLayersInOctave = 4;            % Number of layers in each octave -- SIFT only

@@ -13,32 +13,27 @@ function matches = featureMatching(input, allDescriptors, numImg)
     matSize = size(matches);
     
     % Use symmetry and run for upper triangular matrix
-    IuppeIdx = nonzeros(triu(reshape(1:numel(matches), size(matches))));
+    IuppeIdx = nonzeros(triu(reshape(1:numel(matches), size(matches)),1));
     
     % Initialize
-    matches_temp = cell(1,length(IuppeIdx));         
+    matches_ij = cell(1,length(IuppeIdx));         
     
     % Match features
     parfor i = 1:length(IuppeIdx)
         % IND2SUB converts from a "linear" index into individual
         % subscripts
-        [ii,jj] = ind2sub(matSize, IuppeIdx(i));
-        
-        if (ii~=jj)
-            matches_temp{i} = getMatches(input, allDescriptors{ii}, allDescriptors{jj});
-        end
-
+        [ii,jj] = ind2sub(matSize, IuppeIdx(i));     
+        matches_ij{i} = getMatches(input, allDescriptors{ii}, allDescriptors{jj});
     end
-
     
     % Populate A matrix
-    matches(IuppeIdx) = matches_temp;
+    matches(IuppeIdx) = matches_ij;
 end
 
 %--------------------------------------------------------------------------------------------------------
 % Auxillary functions
 %--------------------------------------------------------------------------------------------------------
-% [matches_temp] = getMatches(features1,features2)
+% [matches_ij] = getMatches(features1,features2)
 function matches = getMatches(input,features1,features2)
     matches = matchFeatures(features1,features2, 'Method', input.Matchingmethod, ...
                             'MatchThreshold', input.Matchingthreshold, ...

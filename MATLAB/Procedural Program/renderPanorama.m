@@ -104,7 +104,7 @@ function [panorama, gainpanorama, noBlendCompensationPanorama, gainImages, ...
         
         % Display the panorama images with their numbers
         if input.showPanoramaImgsNums
-            imageNumbersShow(warpedImages)
+            imageNumbersDisplay(warpedImages)
         end
 
         switch input.blending
@@ -259,12 +259,12 @@ function [height, width] = getPanoramaSize(images, tforms, ccs, cc)
     height = round(yMax - yMin);
 end
 
-% imageNumbersShow(warpedImages)
+% imageNumbersDisplay(warpedImages)
 %
 % Displays the panorama images with their numbers
 % for the debugging purpose of stitched images neighbors from the matches graphs.
 %
-function imageNumbersShow(warpedImages)
+function imageNumbersDisplay(warpedImages)
     % Image numbering for debugging
     warpedImagesMask2D = cellfun(@(x) imfill(imbinarize(rgb2gray(255 * x)), 'holes'), ...
                     warpedImages, 'UniformOutput',false);
