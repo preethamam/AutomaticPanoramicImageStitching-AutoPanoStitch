@@ -48,21 +48,25 @@ warning('off','all')
 %--------------------------------------------------------------------------
 % Image sets
 %--------------------------------------------------------------------------
-imgSetVector = imageSet(fullfile(folderPath,folderName),'recursive');
-datasetName  = cat(1,{imgSetVector.Description})';
-foldersLen = length(imgSetVector);
+imgFolders = dir(fullfile(folderPath,folderName));
+imgFolders = imgFolders([imgFolders(:).isdir]);
+imgFolders = imgFolders(~ismember({imgFolders(:).name},{'.','..'}));
+
+% Dataset name and folders length
+datasetName  = {imgFolders.name}';
+foldersLen = length(datasetName);
 
 %% Panorama stitcher
 %--------------------------------------------------------------------------
 % Stitches panoramas
 %--------------------------------------------------------------------------
-for myImg = 62 %1:foldersLen
+for myImg = 65 %1:foldersLen
     stitchStart = tic;
-    fprintf('Image number: %i | Current folder: %s\n', myImg, imgSetVector(myImg).Description);
+    fprintf('Image number: %i | Current folder: %s\n', myImg, imgFolders(myImg).name);
     
     %% Load images
     loadimagestic = tic;
-    [keypoints, allDescriptors, images, numImg] = loadImages(input, imgSetVector, myImg);
+    [keypoints, allDescriptors, images, numImg] = loadImages(input, imgFolders, myImg);
     fprintf('Loading images (+ features): %f seconds\n', toc(loadimagestic));
 
     %% Get feature matrices and keypoints    

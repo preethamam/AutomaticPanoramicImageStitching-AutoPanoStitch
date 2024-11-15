@@ -27,7 +27,7 @@ input.poolType = 'numcores';     % 'numcores' | 'Threads'
 
 %% Inputs 3
 % Warping
-input.warpType = 'planar';   % 'spherical' | 'cylindrical' | 'planar' (projective)
+input.warpType = 'spherical';   % 'spherical' | 'cylindrical' | 'planar' (projective)
 
 % Focal length
 input.fx = 2000;       % focal length of camera in pixels

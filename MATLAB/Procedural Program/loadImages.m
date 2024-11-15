@@ -11,7 +11,7 @@ function [keypoints, allDescriptors, images, numImgs] = loadImages(input, imgSet
     %************************************************************************%
 
     % Read images    
-    imgFolder = fileparts(imgSetVector(myImg).ImageLocation(1));
+    imgFolder = fullfile(imgSetVector(myImg).folder, imgSetVector(myImg).name);
     imds = imageDatastore(imgFolder);
     imageFiles = readall(imds);    
 
