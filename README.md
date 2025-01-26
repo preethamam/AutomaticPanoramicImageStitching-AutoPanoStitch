@@ -18,10 +18,10 @@ Automatic Panorama Stitching software in MATLAB. Spherical, cyclindrical and pla
 
 # Requirements
 MATLAB <br />
-MATLAB Computer Vision Toolbox <br />
-MATLAB Image Processing Toolbox <br />
-MATLAB Parallel Computing Toolbox <br />
-MATLAB Optimization Toolbox
+Computer Vision Toolbox <br />
+Image Processing Toolbox <br />
+Parallel Computing Toolbox <br />
+Optimization Toolbox
 
 # Run command
 Please use the `Main_AutoPanoStitch.m` to run the program. Change the `folderPath      = '../../../Data/Generic';` to your desired folder path. Also, change the `folderName      = '';` to a valid name. You can download the whole Generic folder datasets in [AutoPanoStitch Stitching Datasets Compilation](https://1drv.ms/f/s!AlFYM4jwmzqrtaBpxVMpJegvN9QVZw?e=UIaYug).
